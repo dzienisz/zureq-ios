@@ -1,0 +1,49 @@
+name: ZureqShopper
+options:
+  bundleIdPrefix: com.dzienisz
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+targets:
+  ZureqShopper:
+    type: application
+    platform: iOS
+    sources: [ZureqShopper]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dzienisz.zureqshopper
+        PRODUCT_NAME: ZureqShopper
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: ZUREQ
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: YES
+  ZureqShopperTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [ZureqShopperTests]
+    dependencies:
+      - target: ZureqShopper
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.dzienisz.zureqshopper.tests
+schemes:
+  ZureqShopper:
+    build:
+      targets:
+        ZureqShopper: all
+        ZureqShopperTests: [test]
+    test:
+      targets: [ZureqShopperTests]

@@ -1,0 +1,38 @@
+import SwiftUI
+
+struct SettingsView: View {
+    @Environment(AppModel.self) private var app
+    @State private var confirmRemove = false
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    LabeledContent("Remaining", value: Credits.format(app.usage?.remaining))
+                    LabeledContent("Used", value: "\(Credits.format(app.usage?.used)) of \(Credits.format(app.usage?.included))")
+                    if let period = app.usage?.period { LabeledContent("Period", value: period) }
+                    if let plan = app.usage?.plan { LabeledContent("Plan", value: plan.capitalized) }
+                    LabeledContent("This session", value: Credits.format(app.sessionCredits))
+                } header: {
+                    Text("Credits")
+                } footer: {
+                    Text("Search 3 (1 if nothing is found) · live price 1 · checkout link 1.")
+                }
+                Section("Account") {
+                    Button("Disconnect API key", role: .destructive) { confirmRemove = true }
+                }
+                Section("About") {
+                    Link("zureq.io", destination: URL(string: "https://zureq.io")!)
+                    Link("ZUREQ docs", destination: URL(string: "https://docs.zureq.io")!)
+                    LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—")
+                }
+            }
+            .navigationTitle("Settings")
+            .refreshable { await app.refreshUsage() }
+            .task { await app.refreshUsage() }
+            .confirmationDialog("Disconnect this API key from the app?", isPresented: $confirmRemove, titleVisibility: .visible) {
+                Button("Disconnect", role: .destructive) { app.removeKey() }
+            }
+        }
+    }
+}
