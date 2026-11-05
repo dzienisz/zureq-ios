@@ -58,6 +58,8 @@ final class ZureqClient: Sendable {
                     (data, response) = try await transport.send(request)
                 } catch let error as ZureqError {
                     throw error
+                } catch let error as URLError where Self.isStaleConnection(error) && attempt < 2 {
+                    continue
                 } catch {
                     throw ZureqError(code: .networkError, message: "Could not reach ZUREQ. Check your connection.")
                 }
@@ -66,6 +68,11 @@ final class ZureqClient: Sendable {
                 try await Task.sleep(for: retryDelay)
             }
         }
+    }
+
+    /// A reused keep-alive connection that the server already closed fails the first request after idling.
+    static func isStaleConnection(_ error: URLError) -> Bool {
+        [.networkConnectionLost, .timedOut].contains(error.code)
     }
 
     static func parse<T: Decodable>(data: Data, status: Int, as type: T.Type) throws -> T {
