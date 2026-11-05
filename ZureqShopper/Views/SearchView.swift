@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SearchView: View {
     @Environment(AppModel.self) private var app
+    @Environment(Watchlist.self) private var watchlist
     @State private var model = SearchModel()
     @State private var showFilters = false
 
@@ -79,6 +80,13 @@ struct SearchView: View {
                 Section {
                     ForEach(model.products) { product in
                         NavigationLink(value: product) { ProductRow(product: product) }
+                            .swipeActions(edge: .leading) {
+                                let watched = watchlist.contains(product)
+                                Button { watchlist.toggle(product) } label: {
+                                    Label(watched ? "Unwatch" : "Watch", systemImage: watched ? "star.slash" : "star")
+                                }
+                                .tint(.yellow)
+                            }
                     }
                 } footer: {
                     if let note = model.note { Text(note) }

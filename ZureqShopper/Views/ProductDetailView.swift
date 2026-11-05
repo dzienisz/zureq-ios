@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProductDetailView: View {
     @Environment(AppModel.self) private var app
+    @Environment(Watchlist.self) private var watchlist
     @Environment(\.openURL) private var openURL
     @State private var product: Product
     @State private var details: ProductDetails?
@@ -88,6 +89,14 @@ struct ProductDetailView: View {
         }
         .navigationTitle(product.shopName ?? "Product")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                let watched = watchlist.contains(product)
+                Button { watchlist.toggle(product, checkedAt: details == nil ? nil : Date()) } label: {
+                    Label(watched ? "Stop watching" : "Watch price", systemImage: watched ? "star.fill" : "star")
+                }
+            }
+        }
         .task { await loadDetails() }
     }
 
@@ -105,6 +114,7 @@ struct ProductDetailView: View {
             product = applied.product
             previousPrice = applied.previousPrice
             details = live
+            watchlist.record(applied.product)
             if let variants = live.variants, variants.count == 1 { variantSku = variants[0].sku }
         } catch {
             loadError = (error as? ZureqError)?.message ?? "Could not check the live price."
