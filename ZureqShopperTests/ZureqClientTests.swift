@@ -3,12 +3,14 @@ import XCTest
 
 final class StubTransport: HTTPTransport, @unchecked Sendable {
     var responses: [(Int, String)]
+    var failures: [URLError] = []
     private(set) var requests: [URLRequest] = []
 
     init(_ responses: [(Int, String)]) { self.responses = responses }
 
     func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         requests.append(request)
+        if !failures.isEmpty { throw failures.removeFirst() }
         let (status, body) = responses.removeFirst()
         let response = HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: nil)!
         return (Data(body.utf8), response)
@@ -62,7 +64,7 @@ final class ZureqClientTests: XCTestCase {
     func testBadKeyMapsToFriendlyError() async {
         let stub = StubTransport([(401, #"{"jsonrpc":"2.0","id":null,"error":{"code":-32001,"message":"Unknown credential"}}"#)])
         do {
-            let _: Usage = try await client(stub).call("get_usage")
+            let _: Usage = try await ZureqClient(transport: stub, retryDelay: .zero) { "zmcp_test" }.call("get_usage")
             XCTFail("expected error")
         } catch let error as ZureqError {
             XCTAssertEqual(error.code, .badKey)
@@ -82,7 +84,7 @@ final class ZureqClientTests: XCTestCase {
     func testDoesNotRetryTwice() async {
         let stub = StubTransport([(503, "<html>"), (503, "<html>")])
         do {
-            let _: Usage = try await client(stub).call("get_usage")
+            let _: Usage = try await ZureqClient(transport: stub, retryDelay: .zero) { "zmcp_test" }.call("get_usage")
             XCTFail("expected error")
         } catch let error as ZureqError {
             XCTAssertEqual(error.code, .unavailable)
@@ -92,7 +94,7 @@ final class ZureqClientTests: XCTestCase {
 
     func testParsesServerSentEvents() async throws {
         let stub = StubTransport([(200, "event: message\ndata: {\"result\":{\"structuredContent\":{\"remaining\":5}},\"jsonrpc\":\"2.0\",\"id\":1}\n\n")])
-        let usage: Usage = try await client(stub).call("get_usage")
+        let usage: Usage = try await ZureqClient(transport: stub, retryDelay: .zero) { "zmcp_test" }.call("get_usage")
         XCTAssertEqual(usage.remaining, 5)
     }
 
@@ -176,5 +178,25 @@ final class HelperTests: XCTestCase {
     func testDecodesHTMLEntities() {
         XCTAssertEqual("Bluetooth &#8211; FM &amp; MP3 &#x2014; &quot;x&quot;".decodingHTMLEntities, "Bluetooth \u{2013} FM & MP3 \u{2014} \"x\"")
         XCTAssertEqual("A & B &bogus; &".decodingHTMLEntities, "A & B &bogus; &")
+    }
+
+    func testRetriesOnceAfterDroppedConnection() async throws {
+        let stub = StubTransport([(200, #"{"result":{"structuredContent":{"used":1}},"jsonrpc":"2.0","id":1}"#)])
+        stub.failures = [URLError(.networkConnectionLost)]
+        let usage: Usage = try await ZureqClient(transport: stub, retryDelay: .zero) { "zmcp_test" }.call("get_usage")
+        XCTAssertEqual(usage.used, 1)
+        XCTAssertEqual(stub.requests.count, 2)
+    }
+
+    func testOfflineIsNotRetried() async {
+        let stub = StubTransport([])
+        stub.failures = [URLError(.notConnectedToInternet)]
+        do {
+            let _: Usage = try await ZureqClient(transport: stub, retryDelay: .zero) { "zmcp_test" }.call("get_usage")
+            XCTFail("expected error")
+        } catch let error as ZureqError {
+            XCTAssertEqual(error.code, .networkError)
+            XCTAssertEqual(stub.requests.count, 1)
+        } catch { XCTFail("\(error)") }
     }
 }
