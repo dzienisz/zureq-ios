@@ -16,7 +16,7 @@ struct ZureqError: Error, Equatable, LocalizedError, Sendable {
 
     static func fromRPC(code: Int?, message: String?) -> ZureqError {
         switch code {
-        case -32001: return ZureqError(code: .badKey, message: "The API key was rejected. Check it in Settings.")
+        case -32001: return ZureqError(code: .badKey, message: "The API key was rejected. Check that it is correct and still active.")
         case -32002: return .rateLimit
         case -32003: return ZureqError(code: .creditsExhausted, message: "Your monthly ZUREQ credits are exhausted.")
         case -32602: return ZureqError(code: .invalidArgs, message: "The request was not accepted. Check the search fields.")
