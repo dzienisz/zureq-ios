@@ -25,6 +25,9 @@ struct ZureqError: Error, Equatable, LocalizedError, Sendable {
         }
     }
 
+    /// Errors that will fail every following call too, so batch work should stop.
+    var stopsBatch: Bool { [.noKey, .badKey, .creditsExhausted].contains(code) }
+
     /// Per docs.zureq.io: retry once on rate limits, 503/-32603, shop timeouts and "temporarily unavailable".
     var isRetryable: Bool {
         switch code {

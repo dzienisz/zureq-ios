@@ -178,6 +178,24 @@ struct CheckoutLink: Decodable, Sendable {
     var note: String?
 }
 
+struct ShopInfo: Codable, Equatable, Sendable {
+    var checkoutLinkSupported: Bool?
+    var checkoutLinkMaxLines: Int?
+
+    enum CodingKeys: String, CodingKey { case checkoutLinkSupported, checkoutLinkMaxLines }
+
+    init(checkoutLinkSupported: Bool? = nil, checkoutLinkMaxLines: Int? = nil) {
+        self.checkoutLinkSupported = checkoutLinkSupported
+        self.checkoutLinkMaxLines = checkoutLinkMaxLines
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        checkoutLinkSupported = try? c.decodeIfPresent(Bool.self, forKey: .checkoutLinkSupported)
+        checkoutLinkMaxLines = c.flexibleDouble(.checkoutLinkMaxLines).map { Int($0) }
+    }
+}
+
 struct Usage: Decodable, Equatable, Sendable {
     var plan: String?
     var used: Double?
