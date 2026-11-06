@@ -64,7 +64,7 @@ struct SearchView: View {
             ContentUnavailableView {
                 Label("No matches", systemImage: "magnifyingglass")
             } description: {
-                Text("Nothing matched “\(model.searchedQuery)”\(model.market.isEmpty ? "" : " in \(marketName)"). Try other words, another country or fewer filters.")
+                Text(emptyDescription)
             }
         case .failed(let message):
             ContentUnavailableView {
@@ -96,13 +96,19 @@ struct SearchView: View {
         }
     }
 
+    private var emptyDescription: LocalizedStringKey {
+        model.market.isEmpty
+            ? "Nothing matched “\(model.searchedQuery)”. Try other words, another country or fewer filters."
+            : "Nothing matched “\(model.searchedQuery)” in \(marketName). Try other words, another country or fewer filters."
+    }
+
     private var marketName: String {
         app.markets.first { $0.code == model.market }?.label ?? model.market
     }
 
     private var shopCountText: String {
         let total = app.markets.filter { $0.code != "EU" }.compactMap(\.shops).reduce(0, +)
-        guard total >= 1000 else { return "thousands of" }
+        guard total >= 1000 else { return String(localized: "thousands of") }
         return "\((total / 100 * 100).formatted())+"
     }
 }
@@ -120,11 +126,11 @@ struct MarketMenu: View {
                 }
             }
         } label: {
-            Text("\(Image(systemName: "globe")) \(selection.isEmpty ? "Any" : selection)")
+            Text("\(Image(systemName: "globe")) \(selection.isEmpty ? String(localized: "Any") : selection)")
                 .font(.subheadline.weight(.semibold))
                 .padding(.horizontal, 4)
         }
-        .accessibilityLabel("Country: \(selection.isEmpty ? "Any" : selection)")
+        .accessibilityLabel("Country: \(selection.isEmpty ? String(localized: "Any") : selection)")
     }
 }
 

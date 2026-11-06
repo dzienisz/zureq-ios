@@ -71,7 +71,7 @@ struct ProductDetailView: View {
                     HStack {
                         Spacer()
                         if isOpeningCheckout { ProgressView().tint(.white) }
-                        Text("Buy at \(product.shopName ?? "shop")").fontWeight(.semibold)
+                        Text("Buy at \(product.shopName ?? String(localized: "shop"))").fontWeight(.semibold)
                         Spacer()
                     }
                 }
@@ -87,7 +87,7 @@ struct ProductDetailView: View {
                 }
             }
         }
-        .navigationTitle(product.shopName ?? "Product")
+        .navigationTitle(product.shopName ?? String(localized: "Product"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -117,7 +117,7 @@ struct ProductDetailView: View {
             watchlist.record(applied.product)
             if let variants = live.variants, variants.count == 1 { variantSku = variants[0].sku }
         } catch {
-            loadError = (error as? ZureqError)?.message ?? "Could not check the live price."
+            loadError = (error as? ZureqError)?.message ?? String(localized: "Could not check the live price.")
         }
     }
 
@@ -132,12 +132,12 @@ struct ProductDetailView: View {
                 "lines": [["sku": .string(sku), "quantity": 1]],
             ])
             guard let url = URL(string: link.checkoutUrl), url.scheme == "https" || url.scheme == "http" else {
-                checkoutError = "The shop returned an invalid checkout link."
+                checkoutError = String(localized: "The shop returned an invalid checkout link.")
                 return
             }
             openURL(url)
         } catch {
-            checkoutError = (error as? ZureqError)?.message ?? "Could not open the checkout."
+            checkoutError = (error as? ZureqError)?.message ?? String(localized: "Could not open the checkout.")
         }
     }
 

@@ -44,7 +44,7 @@ struct WelcomeView: View {
 
 private struct Feature: View {
     let icon: String
-    let text: String
+    let text: LocalizedStringKey
 
     var body: some View {
         Label {
@@ -145,7 +145,7 @@ struct APIKeyForm: View {
             try await app.saveKey(key)
             key = ""
         } catch {
-            self.error = (error as? ZureqError)?.message ?? "Could not check the key."
+            self.error = (error as? ZureqError)?.message ?? String(localized: "Could not check the key.")
         }
     }
 }

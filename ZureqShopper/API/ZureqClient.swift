@@ -9,7 +9,7 @@ struct URLSessionTransport: HTTPTransport {
 
     func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse else { throw ZureqError(code: .networkError, message: "No response from ZUREQ.") }
+        guard let http = response as? HTTPURLResponse else { throw ZureqError(code: .networkError, message: String(localized: "No response from ZUREQ.")) }
         return (data, http)
     }
 }
@@ -86,7 +86,7 @@ final class ZureqClient: Sendable {
                 } catch let error as URLError where Self.isStaleConnection(error) && attempt < 2 {
                     continue
                 } catch {
-                    throw ZureqError(code: .networkError, message: "Could not reach ZUREQ. Check your connection.")
+                    throw ZureqError(code: .networkError, message: String(localized: "Could not reach ZUREQ. Check your connection."))
                 }
                 if response.statusCode == 401, apiKey == nil {
                     if refreshed {
@@ -115,13 +115,13 @@ final class ZureqClient: Sendable {
     static func parse<T: Decodable>(data: Data, status: Int, as type: T.Type) throws -> T {
         guard let object = try? JSONSerialization.jsonObject(with: Self.jsonPayload(data)) as? [String: Any] else {
             if [502, 503, 504].contains(status) { throw ZureqError.unavailable }
-            throw ZureqError(code: .networkError, message: "ZUREQ returned an unreadable response.")
+            throw ZureqError(code: .networkError, message: String(localized: "ZUREQ returned an unreadable response."))
         }
         if let error = object["error"] as? [String: Any] {
             throw ZureqError.fromRPC(code: (error["code"] as? NSNumber)?.intValue, message: error["message"] as? String)
         }
         guard let result = object["result"] as? [String: Any] else {
-            throw ZureqError(code: .parseError, message: "ZUREQ returned no result.")
+            throw ZureqError(code: .parseError, message: String(localized: "ZUREQ returned no result."))
         }
         let isError = (result["isError"] as? Bool) ?? false
         let text = (result["content"] as? [[String: Any]])?.first { $0["type"] as? String == "text" }?["text"] as? String
@@ -136,7 +136,7 @@ final class ZureqClient: Sendable {
             }
             return try decode(structured ?? parsed ?? text, as: T.self)
         }
-        if isError { throw ZureqError(code: .apiError, message: "ZUREQ returned an error.") }
+        if isError { throw ZureqError(code: .apiError, message: String(localized: "ZUREQ returned an error.")) }
         return try decode(structured ?? result, as: T.self)
     }
 
@@ -152,7 +152,7 @@ final class ZureqClient: Sendable {
             let data = try JSONSerialization.data(withJSONObject: value, options: [.fragmentsAllowed])
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            throw ZureqError(code: .parseError, message: "ZUREQ returned data this app could not read.")
+            throw ZureqError(code: .parseError, message: String(localized: "ZUREQ returned data this app could not read."))
         }
     }
 }

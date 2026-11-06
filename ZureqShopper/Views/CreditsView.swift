@@ -60,9 +60,15 @@ struct CreditsSummary: View {
             if let used = usage?.used, let included = usage?.included, included > 0 {
                 ProgressView(value: min(used, included), total: included)
                     .tint(state.tint)
-                Text("\(Credits.format(used)) of \(Credits.format(included)) used\(usage?.period.map { " in \($0)" } ?? "")")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                Group {
+                    if let period = usage?.period {
+                        Text("\(Credits.format(used)) of \(Credits.format(included)) used in \(period)")
+                    } else {
+                        Text("\(Credits.format(used)) of \(Credits.format(included)) used")
+                    }
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
             }
             if let message = state.message {
                 Label(message, systemImage: "exclamationmark.triangle.fill")

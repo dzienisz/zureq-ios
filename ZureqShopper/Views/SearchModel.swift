@@ -45,7 +45,7 @@ final class SearchModel {
     func search(using app: AppModel, query raw: String? = nil) async {
         let text = (raw ?? query).trimmingCharacters(in: .whitespacesAndNewlines)
         guard text.count >= 2 else {
-            phase = .failed("Type at least 2 characters.")
+            phase = .failed(String(localized: "Type at least 2 characters."))
             return
         }
         query = text
@@ -61,7 +61,7 @@ final class SearchModel {
             note = result.note
             phase = result.products.isEmpty ? .empty : .results
         } catch {
-            phase = .failed((error as? ZureqError)?.message ?? "Something went wrong. Please try again.")
+            phase = .failed((error as? ZureqError)?.message ?? String(localized: "Something went wrong. Please try again."))
         }
     }
 

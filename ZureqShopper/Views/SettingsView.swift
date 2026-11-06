@@ -12,7 +12,7 @@ struct SettingsView: View {
                         .padding(.vertical, 4)
                 }
                 Section {
-                    LabeledContent("Connected with", value: app.usesZureqSignIn ? "ZUREQ account" : "API key")
+                    LabeledContent("Connected with") { Text(app.usesZureqSignIn ? "ZUREQ account" : "API key") }
                     Button(app.usesZureqSignIn ? "Sign out" : "Disconnect API key", role: .destructive) { confirmRemove = true }
                 } header: {
                     Text("Account")

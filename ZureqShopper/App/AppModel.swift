@@ -63,7 +63,7 @@ final class AppModel {
         guard !key.isEmpty else { throw ZureqError.noKey }
         let usage: Usage = try await client.call("get_usage", apiKey: key)
         guard keychain.write(key, for: Self.apiKeyAccount) else {
-            throw ZureqError(code: .apiError, message: "Could not save the key to the Keychain.")
+            throw ZureqError(code: .apiError, message: String(localized: "Could not save the key to the Keychain."))
         }
         if let tokens = auth.forget() { Task { await auth.revoke(tokens) } }
         self.usage = usage
