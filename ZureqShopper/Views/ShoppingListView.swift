@@ -23,7 +23,7 @@ struct ShoppingListView: View {
                     } label: {
                         HStack {
                             if list.isSearching { ProgressView() }
-                            Text(list.isSearching ? (list.progress ?? "Searching…") : searchTitle)
+                            Text(list.isSearching ? (list.progress ?? String(localized: "Searching…")) : searchTitle)
                                 .lineLimit(1)
                         }
                     }
@@ -79,15 +79,15 @@ struct ShoppingListView: View {
 
     private var searchTitle: String {
         let count = list.queries.count
-        if count == 0 { return "Search" }
-        return count == 1 ? "Search 1 item" : "Search \(count) items"
+        if count == 0 { return String(localized: "Search") }
+        return count == 1 ? String(localized: "Search 1 item") : String(localized: "Search \(count) items")
     }
 
     private var itemsFooter: String {
         let count = list.queries.count
-        if count > ShoppingList.maxItems { return "Enter no more than \(ShoppingList.maxItems) items." }
-        let base = "One per line or separated by commas, up to \(ShoppingList.maxItems)."
-        return count == 0 ? base : "\(base) Searching costs up to \(list.maxSearchCost) credits."
+        if count > ShoppingList.maxItems { return String(localized: "Enter no more than \(ShoppingList.maxItems) items.") }
+        let base = String(localized: "One per line or separated by commas, up to \(ShoppingList.maxItems).")
+        return count == 0 ? base : String(localized: "\(base) Searching costs up to \(list.maxSearchCost) credits.")
     }
 
     private func search() async {
@@ -208,7 +208,7 @@ private struct ShopGroupRow: View {
                     }
                     .buttonStyle(.bordered)
                 } else {
-                    Text("\(cart.label): \(cart.error ?? "No checkout link returned.")")
+                    Text("\(cart.label): \(cart.error ?? String(localized: "No checkout link returned."))")
                         .font(.footnote)
                         .foregroundStyle(.red)
                 }

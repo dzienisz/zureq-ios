@@ -1,0 +1,1573 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ %@": {
+      "shouldTranslate": false
+    },
+    "%@ Searching costs up to %lld credits.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ Wyszukiwanie kosztuje do %lld kredytów."
+          }
+        }
+      }
+    },
+    "%@ credits left": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozostało kredytów: %@"
+          }
+        }
+      }
+    },
+    "%@ of %@ used": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zużyto %@ z %@"
+          }
+        }
+      }
+    },
+    "%@ of %@ used in %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zużyto %@ z %@ w okresie %@"
+          }
+        }
+      }
+    },
+    "%@: %@": {
+      "shouldTranslate": false
+    },
+    "%lld in stock": {
+      "localizations": {
+        "pl": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld sztuki dostępne"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld sztuk dostępnych"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld sztuka dostępna"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld sztuki dostępne"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "API key": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klucz API"
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O aplikacji"
+          }
+        }
+      }
+    },
+    "Account": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konto"
+          }
+        }
+      }
+    },
+    "Any": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dowolny"
+          }
+        }
+      }
+    },
+    "Any country": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dowolny kraj"
+          }
+        }
+      }
+    },
+    "Available": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dostępny"
+          }
+        }
+      }
+    },
+    "Bluetooth headphones\nPhone case\nUSB-C cable": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Słuchawki Bluetooth\nEtui na telefon\nKabel USB-C"
+          }
+        }
+      }
+    },
+    "Buy at %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kup w %@"
+          }
+        }
+      }
+    },
+    "By shop": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Według sklepu"
+          }
+        }
+      }
+    },
+    "Cart": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koszyk"
+          }
+        }
+      }
+    },
+    "Cart %lld of %lld": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koszyk %lld z %lld"
+          }
+        }
+      }
+    },
+    "Checked %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprawdzono %@"
+          }
+        }
+      }
+    },
+    "Checking a shop costs 1 credit (remembered for a day), then 1 credit per cart. You pay on each shop's own site.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprawdzenie sklepu kosztuje 1 kredyt (zapamiętane na dobę), potem 1 kredyt za koszyk. Płacisz na stronie każdego sklepu."
+          }
+        }
+      }
+    },
+    "Checking live price…": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprawdzanie aktualnej ceny…"
+          }
+        }
+      }
+    },
+    "Checkout %lld items": {
+      "localizations": {
+        "pl": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Do kasy: %lld produkty"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Do kasy: %lld produktów"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Do kasy: %lld produkt"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Do kasy: %lld produktu"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Checkout 1 item": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do kasy: 1 produkt"
+          }
+        }
+      }
+    },
+    "Checkout opens on the shop's own site": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasa otwiera się na stronie sklepu"
+          }
+        }
+      }
+    },
+    "Choose a variant for: %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wybierz wariant dla: %@"
+          }
+        }
+      }
+    },
+    "Choose…": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wybierz…"
+          }
+        }
+      }
+    },
+    "Clear": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyczyść"
+          }
+        }
+      }
+    },
+    "Connect": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Połącz"
+          }
+        }
+      }
+    },
+    "Connected with": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Połączono przez"
+          }
+        }
+      }
+    },
+    "Could not check %lld of %lld prices. Try again later.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się sprawdzić %lld z %lld cen. Spróbuj ponownie później."
+          }
+        }
+      }
+    },
+    "Could not check the key.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się sprawdzić klucza."
+          }
+        }
+      }
+    },
+    "Could not check the live price.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się sprawdzić aktualnej ceny."
+          }
+        }
+      }
+    },
+    "Could not check the shop's checkout support.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się sprawdzić, czy sklep obsługuje linki do kasy."
+          }
+        }
+      }
+    },
+    "Could not complete sign-in with ZUREQ. Please try again.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się dokończyć logowania przez ZUREQ. Spróbuj ponownie."
+          }
+        }
+      }
+    },
+    "Could not create a checkout link.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się utworzyć linku do kasy."
+          }
+        }
+      }
+    },
+    "Could not open the checkout.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się otworzyć kasy."
+          }
+        }
+      }
+    },
+    "Could not reach ZUREQ. Check your connection.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak połączenia z ZUREQ. Sprawdź internet."
+          }
+        }
+      }
+    },
+    "Could not refresh your ZUREQ sign-in. Please try again.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się odnowić logowania ZUREQ. Spróbuj ponownie."
+          }
+        }
+      }
+    },
+    "Could not save the key to the Keychain.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się zapisać klucza w pęku kluczy."
+          }
+        }
+      }
+    },
+    "Could not save the sign-in to the Keychain.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się zapisać logowania w pęku kluczy."
+          }
+        }
+      }
+    },
+    "Country: %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kraj: %@"
+          }
+        }
+      }
+    },
+    "Create a key at [chat.zureq.io/developers](https://chat.zureq.io/developers). It is checked for free and stored only in this device's Keychain.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utwórz klucz na [chat.zureq.io/developers](https://chat.zureq.io/developers). Sprawdzenie jest bezpłatne, a klucz jest zapisany tylko w pęku kluczy tego urządzenia."
+          }
+        }
+      }
+    },
+    "Credits": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kredyty"
+          }
+        }
+      }
+    },
+    "Description": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opis"
+          }
+        }
+      }
+    },
+    "Disconnect": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odłącz"
+          }
+        }
+      }
+    },
+    "Disconnect API key": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odłącz klucz API"
+          }
+        }
+      }
+    },
+    "Disconnect this API key from the app?": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odłączyć ten klucz API od aplikacji?"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gotowe"
+          }
+        }
+      }
+    },
+    "Down %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spadek o %@"
+          }
+        }
+      }
+    },
+    "Enter no more than %lld items.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wpisz najwyżej %lld pozycji."
+          }
+        }
+      }
+    },
+    "Filters": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtry"
+          }
+        }
+      }
+    },
+    "Find products across %@ independent shops. Searches cost 3 credits, or 1 when nothing is found.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znajdź produkty w %@ niezależnych sklepach. Wyszukiwanie kosztuje 3 kredyty, albo 1, gdy nic nie znaleziono."
+          }
+        }
+      }
+    },
+    "Free ZUREQ accounts include monthly credits: a search costs 3, a live price or checkout link 1.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezpłatne konta ZUREQ mają miesięczne kredyty: wyszukiwanie kosztuje 3, aktualna cena lub link do kasy 1."
+          }
+        }
+      }
+    },
+    "Have an API key instead?": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masz klucz API?"
+          }
+        }
+      }
+    },
+    "In stock only": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tylko dostępne"
+          }
+        }
+      }
+    },
+    "In the shop's own currency.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "W walucie sklepu."
+          }
+        }
+      }
+    },
+    "Items": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozycje"
+          }
+        }
+      }
+    },
+    "List": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista"
+          }
+        }
+      }
+    },
+    "Live from shop": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na żywo ze sklepu"
+          }
+        }
+      }
+    },
+    "Live price and stock straight from the shop": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualna cena i dostępność prosto ze sklepu"
+          }
+        }
+      }
+    },
+    "Max price": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena maksymalna"
+          }
+        }
+      }
+    },
+    "Max price must be greater than 0.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena maksymalna musi być większa od 0."
+          }
+        }
+      }
+    },
+    "No checkout link returned.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sklep nie zwrócił linku do kasy."
+          }
+        }
+      }
+    },
+    "No credits left this period. Searches will fail until they reset.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak kredytów w tym okresie. Wyszukiwanie nie zadziała do ich odnowienia."
+          }
+        }
+      }
+    },
+    "No limit": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez limitu"
+          }
+        }
+      }
+    },
+    "No matches": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak wyników"
+          }
+        }
+      }
+    },
+    "No matches in stock.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak dostępnych wyników."
+          }
+        }
+      }
+    },
+    "No response from ZUREQ.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak odpowiedzi od ZUREQ."
+          }
+        }
+      }
+    },
+    "No watched products": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak obserwowanych produktów"
+          }
+        }
+      }
+    },
+    "Not checked live yet": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeszcze nie sprawdzono na żywo"
+          }
+        }
+      }
+    },
+    "Not searched yet.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeszcze nie wyszukano."
+          }
+        }
+      }
+    },
+    "Nothing matched “%@” in %@. Try other words, another country or fewer filters.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nie pasuje do „%@” w: %@. Spróbuj innych słów, innego kraju lub mniejszej liczby filtrów."
+          }
+        }
+      }
+    },
+    "Nothing matched “%@”. Try other words, another country or fewer filters.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nie pasuje do „%@”. Spróbuj innych słów, innego kraju lub mniejszej liczby filtrów."
+          }
+        }
+      }
+    },
+    "One per line or separated by commas, up to %lld.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po jednej w wierszu lub po przecinku, najwyżej %lld."
+          }
+        }
+      }
+    },
+    "Open %@ in Safari": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otwórz %@ w Safari"
+          }
+        }
+      }
+    },
+    "Opens the shop's checkout in Safari. You pay on the shop's own site. Costs 1 credit.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otwiera kasę sklepu w Safari. Płacisz na stronie sklepu. Koszt: 1 kredyt."
+          }
+        }
+      }
+    },
+    "Out of stock": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niedostępny"
+          }
+        }
+      }
+    },
+    "Pick a country or the whole EU": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wybierz kraj albo całą UE"
+          }
+        }
+      }
+    },
+    "Pick one result per item to see shop totals.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wybierz jeden wynik dla każdej pozycji, aby zobaczyć sumy według sklepu."
+          }
+        }
+      }
+    },
+    "Price": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena"
+          }
+        }
+      }
+    },
+    "Price info": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informacja o cenie"
+          }
+        }
+      }
+    },
+    "Product": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produkt"
+          }
+        }
+      }
+    },
+    "Recent searches": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ostatnie wyszukiwania"
+          }
+        }
+      }
+    },
+    "Refresh prices": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odśwież ceny"
+          }
+        }
+      }
+    },
+    "Refreshing checks each live price for 1 credit (%lld total).": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odświeżenie sprawdza każdą cenę za 1 kredyt (łącznie %lld)."
+          }
+        }
+      }
+    },
+    "Reset filters": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyczyść filtry"
+          }
+        }
+      }
+    },
+    "Running low. Credits reset at the start of the next period.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kredyty na wyczerpaniu. Odnowią się na początku następnego okresu."
+          }
+        }
+      }
+    },
+    "Search": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szukaj"
+          }
+        }
+      }
+    },
+    "Search %lld items": {
+      "localizations": {
+        "pl": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Szukaj %lld pozycje"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Szukaj %lld pozycji"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Szukaj %lld pozycji"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Szukaj %lld pozycji"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Search 1 item": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szukaj 1 pozycji"
+          }
+        }
+      }
+    },
+    "Search 3 (1 if nothing is found) · live price 1 · checkout link 1 · usage and markets free.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyszukiwanie 3 (1, gdy brak wyników) · aktualna cena 1 · link do kasy 1 · zużycie i rynki bezpłatnie."
+          }
+        }
+      }
+    },
+    "Search ZUREQ shops": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szukaj w sklepach ZUREQ"
+          }
+        }
+      }
+    },
+    "Search failed": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyszukiwanie nie powiodło się"
+          }
+        }
+      }
+    },
+    "Search failed.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyszukiwanie nie powiodło się."
+          }
+        }
+      }
+    },
+    "Search in your own words and language": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szukaj własnymi słowami, w swoim języku"
+          }
+        }
+      }
+    },
+    "Search independent online shops, check live prices and stock, and jump straight to the shop's checkout.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przeszukuj niezależne sklepy internetowe, sprawdzaj aktualne ceny i dostępność i przechodź prosto do kasy sklepu."
+          }
+        }
+      }
+    },
+    "Searching %lld of %lld: %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szukanie %lld z %lld: %@"
+          }
+        }
+      }
+    },
+    "Searching shops…": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przeszukiwanie sklepów…"
+          }
+        }
+      }
+    },
+    "Searching…": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szukanie…"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ustawienia"
+          }
+        }
+      }
+    },
+    "Shop": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sklep"
+          }
+        }
+      }
+    },
+    "Shows credit details": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokazuje szczegóły kredytów"
+          }
+        }
+      }
+    },
+    "Sign in with ZUREQ": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaloguj się przez ZUREQ"
+          }
+        }
+      }
+    },
+    "Sign in with ZUREQ or add an API key to get started.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaloguj się przez ZUREQ albo dodaj klucz API, aby zacząć."
+          }
+        }
+      }
+    },
+    "Sign out": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyloguj się"
+          }
+        }
+      }
+    },
+    "Sign out of ZUREQ on this device?": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wylogować się z ZUREQ na tym urządzeniu?"
+          }
+        }
+      }
+    },
+    "Sign-in was cancelled.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logowanie zostało anulowane."
+          }
+        }
+      }
+    },
+    "Something went wrong. Please try again.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coś poszło nie tak. Spróbuj ponownie."
+          }
+        }
+      }
+    },
+    "Spent in this app session": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zużyto w tej sesji aplikacji"
+          }
+        }
+      }
+    },
+    "Still checking %@. Try again in a moment.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wciąż sprawdzam: %@. Spróbuj za chwilę."
+          }
+        }
+      }
+    },
+    "Stock": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dostępność"
+          }
+        }
+      }
+    },
+    "Stop watching": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przestań obserwować"
+          }
+        }
+      }
+    },
+    "Tap the star on a product to watch its price.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dotknij gwiazdki przy produkcie, aby obserwować jego cenę."
+          }
+        }
+      }
+    },
+    "The API key was rejected. Check that it is correct and still active.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klucz API został odrzucony. Sprawdź, czy jest poprawny i nadal aktywny."
+          }
+        }
+      }
+    },
+    "The request was not accepted. Check the search fields.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapytanie nie zostało przyjęte. Sprawdź pola wyszukiwania."
+          }
+        }
+      }
+    },
+    "The shop returned an invalid checkout link.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sklep zwrócił nieprawidłowy link do kasy."
+          }
+        }
+      }
+    },
+    "This shop doesn't support checkout links. Open the products on the shop's site instead.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ten sklep nie obsługuje linków do kasy. Otwórz produkty na stronie sklepu."
+          }
+        }
+      }
+    },
+    "Try again": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spróbuj ponownie"
+          }
+        }
+      }
+    },
+    "Type at least 2 characters.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wpisz co najmniej 2 znaki."
+          }
+        }
+      }
+    },
+    "Unwatch": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie obserwuj"
+          }
+        }
+      }
+    },
+    "Up %@": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wzrost o %@"
+          }
+        }
+      }
+    },
+    "Updated %lld d ago": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaktualizowano %lld dni temu"
+          }
+        }
+      }
+    },
+    "Updated %lld h ago": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaktualizowano %lld godz. temu"
+          }
+        }
+      }
+    },
+    "Updated %lld min ago": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaktualizowano %lld min temu"
+          }
+        }
+      }
+    },
+    "Updated just now": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaktualizowano przed chwilą"
+          }
+        }
+      }
+    },
+    "Uses your ZUREQ account and its credits. Google sign-in works too.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Używa Twojego konta ZUREQ i jego kredytów. Logowanie przez Google też działa."
+          }
+        }
+      }
+    },
+    "Variant": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wariant"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wersja"
+          }
+        }
+      }
+    },
+    "Watch": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obserwuj"
+          }
+        }
+      }
+    },
+    "Watch price": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obserwuj cenę"
+          }
+        }
+      }
+    },
+    "Watchlist": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obserwowane"
+          }
+        }
+      }
+    },
+    "What are you looking for?": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Czego szukasz?"
+          }
+        }
+      }
+    },
+    "Where": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gdzie"
+          }
+        }
+      }
+    },
+    "You can also remove this app in Developers → Connected apps on chat.zureq.io.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Możesz też usunąć tę aplikację w Developers → Connected apps na chat.zureq.io."
+          }
+        }
+      }
+    },
+    "Your ZUREQ sign-in has ended. Sign in again to continue.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logowanie ZUREQ wygasło. Zaloguj się ponownie, aby kontynuować."
+          }
+        }
+      }
+    },
+    "Your monthly ZUREQ credits are exhausted.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twoje miesięczne kredyty ZUREQ są wyczerpane."
+          }
+        }
+      }
+    },
+    "ZUREQ": {
+      "shouldTranslate": false
+    },
+    "ZUREQ Shopper": {
+      "shouldTranslate": false
+    },
+    "ZUREQ account": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konto ZUREQ"
+          }
+        }
+      }
+    },
+    "ZUREQ docs": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dokumentacja ZUREQ"
+          }
+        }
+      }
+    },
+    "ZUREQ is rate limiting requests. Please try again shortly.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZUREQ ogranicza liczbę zapytań. Spróbuj za chwilę."
+          }
+        }
+      }
+    },
+    "ZUREQ is temporarily unavailable. Please try again shortly.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZUREQ jest chwilowo niedostępny. Spróbuj za chwilę."
+          }
+        }
+      }
+    },
+    "ZUREQ returned an error.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZUREQ zwrócił błąd."
+          }
+        }
+      }
+    },
+    "ZUREQ returned an unexpected error.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZUREQ zwrócił nieoczekiwany błąd."
+          }
+        }
+      }
+    },
+    "ZUREQ returned an unreadable response.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZUREQ zwrócił nieczytelną odpowiedź."
+          }
+        }
+      }
+    },
+    "ZUREQ returned data this app could not read.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZUREQ zwrócił dane, których aplikacja nie potrafi odczytać."
+          }
+        }
+      }
+    },
+    "ZUREQ returned no result.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZUREQ nie zwrócił wyniku."
+          }
+        }
+      }
+    },
+    "ZUREQ sign-in could not be verified. Please try again.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie udało się zweryfikować logowania ZUREQ. Spróbuj ponownie."
+          }
+        }
+      }
+    },
+    "credits left": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kredytów pozostało"
+          }
+        }
+      }
+    },
+    "shop": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sklepie"
+          }
+        }
+      }
+    },
+    "thousands of": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tysiącach"
+          }
+        }
+      }
+    },
+    "zmcp_… API key": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klucz API zmcp_…"
+          }
+        }
+      }
+    },
+    "zureq.io": {
+      "shouldTranslate": false
+    }
+  },
+  "version": "1.0"
+}

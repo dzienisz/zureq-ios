@@ -132,7 +132,7 @@ final class ShoppingList {
             save()
         }
         for index in parts.indices {
-            progress = "Searching \(index + 1) of \(parts.count): \(parts[index].query)"
+            progress = String(localized: "Searching \(index + 1) of \(parts.count): \(parts[index].query)")
             do {
                 parts[index].candidates = Array(try await searchItem(parts[index].query).prefix(Self.candidatesPerItem))
             } catch let error as ZureqError where error.stopsBatch {
@@ -140,7 +140,7 @@ final class ShoppingList {
                 searchError = error.message
                 return
             } catch {
-                parts[index].error = (error as? ZureqError)?.message ?? "Search failed."
+                parts[index].error = (error as? ZureqError)?.message ?? String(localized: "Search failed.")
             }
             parts[index].searched = true
             save()
@@ -184,7 +184,7 @@ final class ShoppingList {
             save()
         } catch {
             guard let current = parts.firstIndex(where: { $0.id == partId }) else { return }
-            parts[current].error = (error as? ZureqError)?.message ?? "Could not check the live price."
+            parts[current].error = (error as? ZureqError)?.message ?? String(localized: "Could not check the live price.")
         }
     }
 
@@ -202,12 +202,12 @@ final class ShoppingList {
         for part in group.parts { await loadDetails(for: part.id, fetch: fetchDetails) }
         let current = group.parts.compactMap { part in parts.first { $0.id == part.id } }
         if let failed = current.first(where: { $0.needsDetails }) {
-            shopMessages[shopId] = failed.error ?? "Still checking \(failed.query). Try again in a moment."
+            shopMessages[shopId] = failed.error ?? String(localized: "Still checking \(failed.query). Try again in a moment.")
             return
         }
         let unresolved = current.filter(\.needsVariant).map(\.query)
         guard unresolved.isEmpty else {
-            shopMessages[shopId] = "Choose a variant for: \(unresolved.joined(separator: ", "))"
+            shopMessages[shopId] = String(localized: "Choose a variant for: \(unresolved.joined(separator: ", "))")
             return
         }
 
@@ -215,18 +215,18 @@ final class ShoppingList {
         do {
             info = try await shopInfo(shopId, fetch: fetchShop)
         } catch {
-            shopMessages[shopId] = (error as? ZureqError)?.message ?? "Could not check the shop's checkout support."
+            shopMessages[shopId] = (error as? ZureqError)?.message ?? String(localized: "Could not check the shop's checkout support.")
             return
         }
         guard info.checkoutLinkSupported != false else {
-            shopMessages[shopId] = "This shop doesn't support checkout links. Open the products on the shop's site instead."
+            shopMessages[shopId] = String(localized: "This shop doesn't support checkout links. Open the products on the shop's site instead.")
             return
         }
 
         let chunks = Self.chunk(current, maxLines: info.checkoutLinkMaxLines)
         var links: [CartLink] = []
         for (index, chunk) in chunks.enumerated() {
-            let label = chunks.count == 1 ? "Cart" : "Cart \(index + 1) of \(chunks.count)"
+            let label = chunks.count == 1 ? String(localized: "Cart") : String(localized: "Cart \(index + 1) of \(chunks.count)")
             do {
                 links.append(CartLink(label: label, url: try await Self.link(shopId, chunk, createLink)))
             } catch let error as ZureqError where error.stopsBatch {
@@ -265,13 +265,13 @@ final class ShoppingList {
                              _ createLink: (String, [String]) async throws -> CheckoutLink) async throws -> URL {
         let link = try await createLink(shopId, parts.compactMap(\.checkoutSku))
         guard let url = URL(string: link.checkoutUrl), url.scheme == "https" || url.scheme == "http" else {
-            throw ZureqError(code: .parseError, message: "The shop returned an invalid checkout link.")
+            throw ZureqError(code: .parseError, message: String(localized: "The shop returned an invalid checkout link."))
         }
         return url
     }
 
     private static func message(_ error: Error) -> String {
-        (error as? ZureqError)?.message ?? "Could not create a checkout link."
+        (error as? ZureqError)?.message ?? String(localized: "Could not create a checkout link.")
     }
 
     private func shopInfo(_ shopId: String, fetch: (String) async throws -> ShopInfo) async throws -> ShopInfo {

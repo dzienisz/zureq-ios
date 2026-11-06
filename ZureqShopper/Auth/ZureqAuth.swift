@@ -93,7 +93,7 @@ actor ZureqAuth {
         let items = URLComponents(url: callback, resolvingAgainstBaseURL: false)?.queryItems ?? []
         func value(_ name: String) -> String? { items.first { $0.name == name }?.value }
         guard value("state") == request.state else {
-            throw ZureqError(code: .authFailed, message: "ZUREQ sign-in could not be verified. Please try again.")
+            throw ZureqError(code: .authFailed, message: String(localized: "ZUREQ sign-in could not be verified. Please try again."))
         }
         if value("error") == "access_denied" { throw ZureqError.signInCancelled }
         guard value("error") == nil, let code = value("code"), !code.isEmpty else { throw ZureqError.signInFailed }
@@ -108,7 +108,7 @@ actor ZureqAuth {
         ])
         guard (200..<300).contains(status), let tokens = tokens(from: json, clientId: request.clientId) else { throw ZureqError.signInFailed }
         guard store(tokens) else {
-            throw ZureqError(code: .authFailed, message: "Could not save the sign-in to the Keychain.")
+            throw ZureqError(code: .authFailed, message: String(localized: "Could not save the sign-in to the Keychain."))
         }
     }
 
@@ -158,7 +158,7 @@ actor ZureqAuth {
             throw ZureqError.signInEnded
         }
         guard (200..<300).contains(status), let fresh = self.tokens(from: json, clientId: tokens.clientId), store(fresh) else {
-            throw ZureqError(code: .authFailed, message: "Could not refresh your ZUREQ sign-in. Please try again.")
+            throw ZureqError(code: .authFailed, message: String(localized: "Could not refresh your ZUREQ sign-in. Please try again."))
         }
         return fresh.access
     }
@@ -176,7 +176,7 @@ actor ZureqAuth {
             let (data, response) = try await transport.send(request)
             return (response.statusCode, (try? JSONSerialization.jsonObject(with: data)) as? [String: Any])
         } catch {
-            throw ZureqError(code: .networkError, message: "Could not reach ZUREQ. Check your connection.")
+            throw ZureqError(code: .networkError, message: String(localized: "Could not reach ZUREQ. Check your connection."))
         }
     }
 

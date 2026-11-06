@@ -85,7 +85,7 @@ final class Watchlist {
             }
         }
         if failures > 0 {
-            refreshError = "Could not check \(failures) of \(items.count) prices. Try again later."
+            refreshError = String(localized: "Could not check \(failures) of \(items.count) prices. Try again later.")
         }
     }
 

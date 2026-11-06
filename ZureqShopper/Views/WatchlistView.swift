@@ -101,7 +101,7 @@ struct WatchRow: View {
     }
 
     private var checkedText: String {
-        guard let checkedAt = item.checkedAt else { return "Not checked live yet" }
-        return "Checked \(checkedAt.formatted(.relative(presentation: .named)))"
+        guard let checkedAt = item.checkedAt else { return String(localized: "Not checked live yet") }
+        return String(localized: "Checked \(checkedAt.formatted(.relative(presentation: .named)))")
     }
 }

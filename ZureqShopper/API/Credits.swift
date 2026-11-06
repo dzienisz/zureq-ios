@@ -33,8 +33,8 @@ enum Credits {
         var message: String? {
             switch self {
             case .ok: nil
-            case .low: "Running low. Credits reset at the start of the next period."
-            case .exhausted: "No credits left this period. Searches will fail until they reset."
+            case .low: String(localized: "Running low. Credits reset at the start of the next period.")
+            case .exhausted: String(localized: "No credits left this period. Searches will fail until they reset.")
             }
         }
     }
@@ -61,21 +61,21 @@ enum Location {
 
 enum Freshness {
     static func stockLabel(_ details: ProductDetails) -> String {
-        guard details.inStock == true else { return "Out of stock" }
-        guard let qty = details.stockQty, qty != 99 else { return "Available" }
-        return "\(qty) in stock"
+        guard details.inStock == true else { return String(localized: "Out of stock") }
+        guard let qty = details.stockQty, qty != 99 else { return String(localized: "Available") }
+        return String(localized: "\(qty) in stock")
     }
 
     static func label(_ details: ProductDetails, now: Date = Date()) -> String {
-        if details.live == true { return "Live from shop" }
+        if details.live == true { return String(localized: "Live from shop") }
         guard let syncedAt = details.syncedAt, let date = parseDate(syncedAt) else { return "" }
         let age = max(0, now.timeIntervalSince(date))
-        if age < 60 { return "Updated just now" }
+        if age < 60 { return String(localized: "Updated just now") }
         let minutes = Int(age / 60)
-        if minutes < 60 { return "Updated \(minutes) min ago" }
+        if minutes < 60 { return String(localized: "Updated \(minutes) min ago") }
         let hours = minutes / 60
-        if hours < 24 { return "Updated \(hours) h ago" }
-        return "Updated \(hours / 24) d ago"
+        if hours < 24 { return String(localized: "Updated \(hours) h ago") }
+        return String(localized: "Updated \(hours / 24) d ago")
     }
 
     static func parseDate(_ text: String) -> Date? {
@@ -98,7 +98,7 @@ enum PriceFormat {
         let text = raw.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: ",", with: ".")
         if text.isEmpty { return .success(nil) }
         guard let value = Double(text), value.isFinite, value > 0 else {
-            return .failure(ZureqError(code: .invalidArgs, message: "Max price must be greater than 0."))
+            return .failure(ZureqError(code: .invalidArgs, message: String(localized: "Max price must be greater than 0.")))
         }
         return .success(value)
     }
