@@ -14,26 +14,50 @@ struct URLSessionTransport: HTTPTransport {
     }
 }
 
+/// Supplies the bearer for each call: an API key, or an OAuth access token that can be refreshed.
+protocol CredentialProvider: Sendable {
+    func credential() async throws -> String?
+    /// A new token after the server rejected `rejected` with 401, or nil if this credential cannot be refreshed.
+    func refreshed(after rejected: String) async throws -> String?
+    /// Called when even a refreshed token was rejected.
+    func invalidate() async
+}
+
+struct StaticCredential: CredentialProvider {
+    let read: @Sendable () -> String?
+
+    func credential() async throws -> String? { read() }
+    func refreshed(after rejected: String) async throws -> String? { nil }
+    func invalidate() async {}
+}
+
 /// JSON-RPC client for the ZUREQ MCP endpoint (https://api.zureq.io/mcp).
 final class ZureqClient: Sendable {
     static let endpoint = URL(string: "https://api.zureq.io/mcp")!
 
     private let transport: HTTPTransport
-    private let credential: @Sendable () -> String?
+    private let provider: CredentialProvider
     private let retryDelay: Duration
 
     init(transport: HTTPTransport = URLSessionTransport(),
          retryDelay: Duration = .seconds(2),
-         credential: @escaping @Sendable () -> String?) {
+         provider: CredentialProvider) {
         self.transport = transport
         self.retryDelay = retryDelay
-        self.credential = credential
+        self.provider = provider
+    }
+
+    convenience init(transport: HTTPTransport = URLSessionTransport(),
+                     retryDelay: Duration = .seconds(2),
+                     credential: @escaping @Sendable () -> String?) {
+        self.init(transport: transport, retryDelay: retryDelay, provider: StaticCredential(read: credential))
     }
 
     func call<T: Decodable>(_ tool: String, _ arguments: [String: JSONValue] = [:], apiKey: String? = nil,
                             as type: T.Type = T.self) async throws -> T {
-        let key = (apiKey ?? credential() ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !key.isEmpty else { throw ZureqError.noKey }
+        let stored: String? = apiKey == nil ? try await provider.credential() : nil
+        var bearer = (apiKey ?? stored ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !bearer.isEmpty else { throw ZureqError.noKey }
 
         let body: JSONValue = [
             "jsonrpc": "2.0",
@@ -43,14 +67,15 @@ final class ZureqClient: Sendable {
         ]
         var request = URLRequest(url: Self.endpoint, timeoutInterval: 45)
         request.httpMethod = "POST"
-        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json, text/event-stream", forHTTPHeaderField: "Accept")
         request.httpBody = try JSONEncoder().encode(body)
 
         var attempt = 0
+        var refreshed = false
         while true {
             attempt += 1
+            request.setValue("Bearer \(bearer)", forHTTPHeaderField: "Authorization")
             do {
                 let data: Data
                 let response: HTTPURLResponse
@@ -62,6 +87,18 @@ final class ZureqClient: Sendable {
                     continue
                 } catch {
                     throw ZureqError(code: .networkError, message: "Could not reach ZUREQ. Check your connection.")
+                }
+                if response.statusCode == 401, apiKey == nil {
+                    if refreshed {
+                        await provider.invalidate()
+                        throw ZureqError.signInEnded
+                    }
+                    if let fresh = try await provider.refreshed(after: bearer) {
+                        bearer = fresh
+                        refreshed = true
+                        attempt -= 1
+                        continue
+                    }
                 }
                 return try Self.parse(data: data, status: response.statusCode, as: T.self)
             } catch let error as ZureqError where error.isRetryable && attempt < 2 {

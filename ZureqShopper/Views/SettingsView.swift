@@ -18,8 +18,15 @@ struct SettingsView: View {
                 } footer: {
                     Text("Search 3 (1 if nothing is found) · live price 1 · checkout link 1.")
                 }
-                Section("Account") {
-                    Button("Disconnect API key", role: .destructive) { confirmRemove = true }
+                Section {
+                    LabeledContent("Connected with", value: app.usesZureqSignIn ? "ZUREQ account" : "API key")
+                    Button(app.usesZureqSignIn ? "Sign out" : "Disconnect API key", role: .destructive) { confirmRemove = true }
+                } header: {
+                    Text("Account")
+                } footer: {
+                    if app.usesZureqSignIn {
+                        Text("You can also remove this app in Developers → Connected apps on chat.zureq.io.")
+                    }
                 }
                 Section("About") {
                     Link("zureq.io", destination: URL(string: "https://zureq.io")!)
@@ -30,8 +37,8 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .refreshable { await app.refreshUsage() }
             .task { await app.refreshUsage() }
-            .confirmationDialog("Disconnect this API key from the app?", isPresented: $confirmRemove, titleVisibility: .visible) {
-                Button("Disconnect", role: .destructive) { app.removeKey() }
+            .confirmationDialog(app.usesZureqSignIn ? "Sign out of ZUREQ on this device?" : "Disconnect this API key from the app?", isPresented: $confirmRemove, titleVisibility: .visible) {
+                Button(app.usesZureqSignIn ? "Sign out" : "Disconnect", role: .destructive) { app.removeKey() }
             }
         }
     }

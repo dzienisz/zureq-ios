@@ -21,6 +21,7 @@ struct WelcomeView: View {
                         Feature(icon: "bolt", text: "Live price and stock straight from the shop")
                         Feature(icon: "cart", text: "Checkout opens on the shop's own site")
                     }
+                    ZureqSignInButton()
                     APIKeyForm()
                 }
                 .padding(24)
@@ -43,6 +44,50 @@ private struct Feature: View {
     }
 }
 
+struct ZureqSignInButton: View {
+    @Environment(AppModel.self) private var app
+    @State private var error: String?
+    @State private var isSigningIn = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                Task { await signIn() }
+            } label: {
+                HStack {
+                    Spacer()
+                    if isSigningIn { ProgressView().tint(.white) }
+                    Text("Sign in with ZUREQ").fontWeight(.semibold)
+                    Spacer()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .disabled(isSigningIn)
+            if let error {
+                Text(error).font(.footnote).foregroundStyle(.red)
+            }
+            Text("Uses your ZUREQ account and its credits. Google sign-in works too.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func signIn() async {
+        isSigningIn = true
+        error = nil
+        defer { isSigningIn = false }
+        do {
+            let web = WebSignIn()
+            try await app.signInWithZureq { try await web.callback(for: $0) }
+        } catch let failure as ZureqError where failure.code == .authCancelled {
+            error = nil
+        } catch {
+            self.error = (error as? ZureqError)?.message ?? ZureqError.signInFailed.message
+        }
+    }
+}
+
 struct APIKeyForm: View {
     @Environment(AppModel.self) private var app
     @State private var key = ""
@@ -51,7 +96,7 @@ struct APIKeyForm: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Connect your ZUREQ account").font(.headline)
+            Text("Or use an API key").font(.headline)
             SecureField("zmcp_… API key", text: $key)
                 .textContentType(.password)
                 .textInputAutocapitalization(.never)
@@ -73,7 +118,7 @@ struct APIKeyForm: View {
                     Spacer()
                 }
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.bordered)
             .controlSize(.large)
             .disabled(isSaving || key.trimmingCharacters(in: .whitespaces).isEmpty)
             Text("Create a key at [chat.zureq.io/developers](https://chat.zureq.io/developers). It is checked for free and stored only in this device's Keychain.")

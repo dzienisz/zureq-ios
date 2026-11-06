@@ -10,12 +10,14 @@ final class AppModel {
     private static let marketsCacheTTL: TimeInterval = 24 * 60 * 60
 
     private(set) var hasKey: Bool
+    private(set) var usesZureqSignIn: Bool
     private(set) var usage: Usage?
     private(set) var sessionCredits: Double = 0
     private(set) var markets: [Market] = []
     private(set) var history: [String]
 
     @ObservationIgnored let client: ZureqClient
+    @ObservationIgnored let auth: ZureqAuth
     @ObservationIgnored private let keychain: KeychainStore
     @ObservationIgnored private let defaults: UserDefaults
 
@@ -23,13 +25,19 @@ final class AppModel {
         self.keychain = keychain
         self.defaults = defaults
         let account = Self.apiKeyAccount
-        client = ZureqClient(transport: transport) { keychain.read(account) }
-        hasKey = !(keychain.read(account) ?? "").isEmpty
+        let auth = ZureqAuth(keychain: keychain, defaults: defaults, transport: transport)
+        self.auth = auth
+        client = ZureqClient(transport: transport, provider: AppCredentials(keychain: keychain, apiKeyAccount: account, auth: auth))
+        let storedKey = !(keychain.read(account) ?? "").isEmpty
+        let signedIn = !storedKey && auth.hasSession
+        usesZureqSignIn = signedIn
+        hasKey = storedKey || signedIn
         history = defaults.stringArray(forKey: Self.historyKey) ?? []
         #if DEBUG
         // Simulator testing: `SIMCTL_CHILD_ZUREQ_API_KEY=zmcp_… xcrun simctl launch …` seeds the Keychain.
         if let seeded = ProcessInfo.processInfo.environment["ZUREQ_API_KEY"], !seeded.isEmpty {
             hasKey = keychain.write(seeded, for: account)
+            usesZureqSignIn = false
         }
         if ProcessInfo.processInfo.arguments.contains("-resetForUITests") { removeKey() }
         #endif
@@ -42,7 +50,10 @@ final class AppModel {
             charge(Credits.cost(tool: tool, resultCount: resultCount?(value)))
             return value
         } catch let error as ZureqError {
-            if error.code == .noKey { hasKey = false }
+            if error.code == .noKey {
+                hasKey = false
+                usesZureqSignIn = false
+            }
             throw error
         }
     }
@@ -54,13 +65,29 @@ final class AppModel {
         guard keychain.write(key, for: Self.apiKeyAccount) else {
             throw ZureqError(code: .apiError, message: "Could not save the key to the Keychain.")
         }
+        if let tokens = auth.forget() { Task { await auth.revoke(tokens) } }
         self.usage = usage
+        usesZureqSignIn = false
         hasKey = true
     }
 
+    /// Runs Sign in with ZUREQ; `present` opens the authorize URL and returns the redirect it ends on.
+    func signInWithZureq(present: (URL) async throws -> URL) async throws {
+        let request = try await auth.startRequest()
+        let callback = try await present(request.url)
+        try await auth.complete(request, callback: callback)
+        keychain.delete(Self.apiKeyAccount)
+        usesZureqSignIn = true
+        hasKey = true
+        await refreshUsage()
+    }
+
+    /// Disconnects the API key or signs out of ZUREQ, revoking the token.
     func removeKey() {
         keychain.delete(Self.apiKeyAccount)
+        if let tokens = auth.forget() { Task { await auth.revoke(tokens) } }
         hasKey = false
+        usesZureqSignIn = false
         usage = nil
         sessionCredits = 0
     }
@@ -117,5 +144,29 @@ final class AppModel {
               Date().timeIntervalSince1970 - savedAt < Self.marketsCacheTTL,
               let data = entry["data"] as? Data else { return nil }
         return try? JSONDecoder().decode([Market].self, from: data)
+    }
+}
+
+/// Prefers a saved API key; otherwise uses the Sign in with ZUREQ session.
+struct AppCredentials: CredentialProvider {
+    let keychain: KeychainStore
+    let apiKeyAccount: String
+    let auth: ZureqAuth
+
+    private var apiKey: String? { keychain.read(apiKeyAccount).flatMap { $0.isEmpty ? nil : $0 } }
+
+    func credential() async throws -> String? {
+        if let apiKey { return apiKey }
+        return auth.hasSession ? try await auth.accessToken() : nil
+    }
+
+    func refreshed(after rejected: String) async throws -> String? {
+        guard apiKey == nil, auth.hasSession else { return nil }
+        return try await auth.refresh(after: rejected)
+    }
+
+    func invalidate() async {
+        guard apiKey == nil else { return }
+        auth.forget()
     }
 }

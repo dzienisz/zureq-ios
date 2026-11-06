@@ -3,6 +3,7 @@ import Foundation
 struct ZureqError: Error, Equatable, LocalizedError, Sendable {
     enum Code: String, Sendable {
         case noKey, badKey, rateLimit, creditsExhausted, invalidArgs, unavailable, apiError, networkError, parseError
+        case authCancelled, authFailed
     }
 
     var code: Code
@@ -10,7 +11,10 @@ struct ZureqError: Error, Equatable, LocalizedError, Sendable {
 
     var errorDescription: String? { message }
 
-    static let noKey = ZureqError(code: .noKey, message: "Add your ZUREQ API key in Settings to get started.")
+    static let noKey = ZureqError(code: .noKey, message: "Sign in with ZUREQ or add an API key to get started.")
+    static let signInEnded = ZureqError(code: .noKey, message: "Your ZUREQ sign-in has ended. Sign in again to continue.")
+    static let signInCancelled = ZureqError(code: .authCancelled, message: "Sign-in was cancelled.")
+    static let signInFailed = ZureqError(code: .authFailed, message: "Could not complete sign-in with ZUREQ. Please try again.")
     static let unavailable = ZureqError(code: .unavailable, message: "ZUREQ is temporarily unavailable. Please try again shortly.")
     static let rateLimit = ZureqError(code: .rateLimit, message: "ZUREQ is rate limiting requests. Please try again shortly.")
 
