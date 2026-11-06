@@ -77,7 +77,7 @@ final class Watchlist {
             do {
                 let details = try await fetch(item.product)
                 record(ProductDetailView.applyLiveDetails(item.product, details).product, checkedAt: now())
-            } catch let error as ZureqError where [.noKey, .badKey, .creditsExhausted].contains(error.code) {
+            } catch let error as ZureqError where error.stopsBatch {
                 refreshError = error.message
                 return
             } catch {
