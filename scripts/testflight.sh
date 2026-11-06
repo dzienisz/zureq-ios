@@ -22,7 +22,10 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 KEY_DIR="$WORK/keys"; mkdir -p "$KEY_DIR"
 KEY_PATH="$KEY_DIR/AuthKey_$ASC_KEY_ID.p8"
-printf '%s\n' "$ASC_PRIVATE_KEY" > "$KEY_PATH"; chmod 600 "$KEY_PATH"
+# Accept the .p8 either as a full PEM or as the bare base64 body (whitespace is ignored).
+ruby -e 'raw = ENV["ASC_PRIVATE_KEY"].gsub(/-----(BEGIN|END) PRIVATE KEY-----/, "").gsub(/\s+/, "")
+puts "-----BEGIN PRIVATE KEY-----", raw.scan(/.{1,64}/), "-----END PRIVATE KEY-----"' > "$KEY_PATH"
+chmod 600 "$KEY_PATH"
 
 cat > "$WORK/ExportOptions.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
