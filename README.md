@@ -26,6 +26,10 @@ Debug builds seed the Keychain from the `ZUREQ_API_KEY` environment variable:
 SIMCTL_CHILD_ZUREQ_API_KEY=zmcp_… xcrun simctl launch booted com.dzienisz.zureqshopper
 ```
 
+## TestFlight
+
+`scripts/testflight.sh` archives the app, signs it with Xcode cloud signing and uploads it to TestFlight. It needs an App Store Connect API key (role App Manager) in the environment: `APPLE_TEAM_ID`, `ASC_KEY_ID`, `ASC_ISSUER_ID` and `ASC_PRIVATE_KEY` (the `.p8` contents). The build number defaults to a UTC timestamp; override it with `BUILD_NUMBER`. Bump `MARKETING_VERSION` in `project.yml` for a new version.
+
 ## Sign in with ZUREQ
 
 OAuth authorization code + PKCE S256 against `chat.zureq.io`, for resource `https://api.zureq.io/mcp`. The app registers itself dynamically (`ZureqAuth.fixedClientId` is `nil` until ZUREQ issues a pre-registered client) and catches the redirect on `http://localhost:47823/callback` with a loopback listener. Use `localhost`, not `127.0.0.1`: the login page rewrites `127.0.0.1` to `localhost`, which then no longer matches the registration. Tokens live in the Keychain; refresh tokens are single-use, so concurrent refreshes share one request.
