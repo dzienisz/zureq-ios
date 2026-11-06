@@ -7,16 +7,9 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    LabeledContent("Remaining", value: Credits.format(app.usage?.remaining))
-                    LabeledContent("Used", value: "\(Credits.format(app.usage?.used)) of \(Credits.format(app.usage?.included))")
-                    if let period = app.usage?.period { LabeledContent("Period", value: period) }
-                    if let plan = app.usage?.plan { LabeledContent("Plan", value: plan.capitalized) }
-                    LabeledContent("This session", value: Credits.format(app.sessionCredits))
-                } header: {
-                    Text("Credits")
-                } footer: {
-                    Text("Search 3 (1 if nothing is found) · live price 1 · checkout link 1.")
+                Section("Credits") {
+                    CreditsSummary()
+                        .padding(.vertical, 4)
                 }
                 Section {
                     LabeledContent("Connected with", value: app.usesZureqSignIn ? "ZUREQ account" : "API key")
