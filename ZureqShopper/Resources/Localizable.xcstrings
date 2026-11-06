@@ -605,6 +605,16 @@
         }
       }
     },
+    "LEGO set": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zestaw LEGO"
+          }
+        }
+      }
+    },
     "List": {
       "localizations": {
         "pl": {
@@ -1239,12 +1249,32 @@
         }
       }
     },
+    "Try searching": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spróbuj wyszukać"
+          }
+        }
+      }
+    },
     "Type at least 2 characters.": {
       "localizations": {
         "pl": {
           "stringUnit": {
             "state": "translated",
             "value": "Wpisz co najmniej 2 znaki."
+          }
+        }
+      }
+    },
+    "USB-C cable": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kabel USB-C"
           }
         }
       }
@@ -1525,12 +1555,72 @@
         }
       }
     },
+    "board game": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gra planszowa"
+          }
+        }
+      }
+    },
+    "coffee beans": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kawa ziarnista"
+          }
+        }
+      }
+    },
     "credits left": {
       "localizations": {
         "pl": {
           "stringUnit": {
             "state": "translated",
             "value": "kredytów pozostało"
+          }
+        }
+      }
+    },
+    "desk lamp": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lampka na biurko"
+          }
+        }
+      }
+    },
+    "phone case": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "etui na telefon"
+          }
+        }
+      }
+    },
+    "power bank": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "powerbank"
+          }
+        }
+      }
+    },
+    "running shoes": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "buty do biegania"
           }
         }
       }
@@ -1551,6 +1641,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "tysiącach"
+          }
+        }
+      }
+    },
+    "wireless headphones": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "słuchawki bezprzewodowe"
+          }
+        }
+      }
+    },
+    "yoga mat": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mata do jogi"
           }
         }
       }

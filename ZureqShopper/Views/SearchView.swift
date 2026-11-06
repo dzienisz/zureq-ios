@@ -31,15 +31,48 @@ struct SearchView: View {
         }
     }
 
+    private static let suggestions: [String] = [
+        String(localized: "wireless headphones"),
+        String(localized: "power bank"),
+        String(localized: "USB-C cable"),
+        String(localized: "coffee beans"),
+        String(localized: "running shoes"),
+        String(localized: "LEGO set"),
+        String(localized: "phone case"),
+        String(localized: "board game"),
+        String(localized: "desk lamp"),
+        String(localized: "yoga mat"),
+    ]
+
     @ViewBuilder private var content: some View {
         switch model.phase {
         case .idle:
-            if app.history.isEmpty {
-                ContentUnavailableView("Search ZUREQ shops",
-                                       systemImage: "bag",
-                                       description: Text("Find products across \(shopCountText) independent shops. Searches cost 3 credits, or 1 when nothing is found."))
-            } else {
-                List {
+            List {
+                if app.history.isEmpty {
+                    Section {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Label("Search ZUREQ shops", systemImage: "bag").font(.headline)
+                            Text("Find products across \(shopCountText) independent shops. Searches cost 3 credits, or 1 when nothing is found.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                Section("Try searching") {
+                    FlowLayout(spacing: 8) {
+                        ForEach(Self.suggestions, id: \.self) { suggestion in
+                            Button(suggestion) {
+                                Task { await model.search(using: app, query: suggestion) }
+                            }
+                            .buttonStyle(.bordered)
+                            .buttonBorderShape(.capsule)
+                            .font(.subheadline)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+                if !app.history.isEmpty {
                     Section {
                         ForEach(app.history, id: \.self) { item in
                             Button {
@@ -209,5 +242,46 @@ struct ProductImage: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .accessibilityHidden(true)
+    }
+}
+
+/// Lays out its children left to right, wrapping to a new row when the width runs out.
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let rows = rows(for: subviews, width: proposal.width ?? .infinity)
+        let height = rows.map { $0.height }.reduce(0, +) + spacing * CGFloat(max(rows.count - 1, 0))
+        return CGSize(width: proposal.width ?? rows.map { $0.width }.max() ?? 0, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for row in rows(for: subviews, width: bounds.width) {
+            var x = bounds.minX
+            for index in row.indices {
+                let size = subviews[index].sizeThatFits(.unspecified)
+                subviews[index].place(at: CGPoint(x: x, y: y), proposal: .unspecified)
+                x += size.width + spacing
+            }
+            y += row.height + spacing
+        }
+    }
+
+    private struct Row { var indices: [Int] = []; var width: CGFloat = 0; var height: CGFloat = 0 }
+
+    private func rows(for subviews: Subviews, width: CGFloat) -> [Row] {
+        var rows: [Row] = [Row()]
+        for (index, subview) in subviews.enumerated() {
+            let size = subview.sizeThatFits(.unspecified)
+            let needed = rows[rows.count - 1].width + (rows[rows.count - 1].indices.isEmpty ? 0 : spacing) + size.width
+            if needed > width, !rows[rows.count - 1].indices.isEmpty { rows.append(Row()) }
+            var row = rows[rows.count - 1]
+            row.width += (row.indices.isEmpty ? 0 : spacing) + size.width
+            row.height = max(row.height, size.height)
+            row.indices.append(index)
+            rows[rows.count - 1] = row
+        }
+        return rows
     }
 }
