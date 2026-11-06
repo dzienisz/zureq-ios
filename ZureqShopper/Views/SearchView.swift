@@ -205,20 +205,3 @@ struct ProductImage: View {
         .accessibilityHidden(true)
     }
 }
-
-struct CreditsBadge: View {
-    @Environment(AppModel.self) private var app
-
-    var body: some View {
-        if let remaining = app.usage?.remaining {
-            Text(Credits.format(remaining))
-                .font(.caption.monospacedDigit().weight(.semibold))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(app.usage?.isLow == true ? Color.red.opacity(0.15) : Color.accentColor.opacity(0.15), in: Capsule())
-                .foregroundStyle(app.usage?.isLow == true ? Color.red : Color.primary)
-                .accessibilityLabel("\(Credits.format(remaining)) credits left")
-                .help("Credits left this month")
-        }
-    }
-}

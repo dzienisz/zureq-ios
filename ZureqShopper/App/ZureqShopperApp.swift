@@ -18,6 +18,7 @@ struct ZureqShopperApp: App {
 
 struct RootView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         if model.hasKey {
@@ -32,6 +33,9 @@ struct RootView: View {
                     .tabItem { Label("Settings", systemImage: "gearshape") }
             }
             .task { await model.refreshUsage() }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { Task { await model.refreshUsage() } }
+            }
         } else {
             WelcomeView()
         }

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @State private var showAPIKey = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -22,7 +24,16 @@ struct WelcomeView: View {
                         Feature(icon: "cart", text: "Checkout opens on the shop's own site")
                     }
                     ZureqSignInButton()
-                    APIKeyForm()
+                    DisclosureGroup(isExpanded: $showAPIKey) {
+                        APIKeyForm().padding(.top, 8)
+                    } label: {
+                        Text("Have an API key instead?")
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .tint(.secondary)
+                    Text("Free ZUREQ accounts include monthly credits: a search costs 3, a live price or checkout link 1.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 }
                 .padding(24)
             }
@@ -96,7 +107,6 @@ struct APIKeyForm: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Or use an API key").font(.headline)
             SecureField("zmcp_… API key", text: $key)
                 .textContentType(.password)
                 .textInputAutocapitalization(.never)

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum Credits {
     static let toolCosts: [String: Double] = [
@@ -16,6 +17,31 @@ enum Credits {
     static func cost(tool: String, resultCount: Int? = nil) -> Double {
         if tool == "search_products", resultCount == 0 { return 1 }
         return toolCosts[tool] ?? 0
+    }
+
+    enum State: Equatable {
+        case ok, low, exhausted
+
+        var tint: Color {
+            switch self {
+            case .ok: .accentColor
+            case .low: .orange
+            case .exhausted: .red
+            }
+        }
+
+        var message: String? {
+            switch self {
+            case .ok: nil
+            case .low: "Running low. Credits reset at the start of the next period."
+            case .exhausted: "No credits left this period. Searches will fail until they reset."
+            }
+        }
+    }
+
+    static func state(of usage: Usage) -> State {
+        if usage.exceeded == true || (usage.remaining ?? 1) <= 0 { return .exhausted }
+        return usage.isLow ? .low : .ok
     }
 
     static func format(_ value: Double?) -> String {
