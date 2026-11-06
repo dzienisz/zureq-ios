@@ -28,7 +28,9 @@ SIMCTL_CHILD_ZUREQ_API_KEY=zmcp_… xcrun simctl launch booted com.dzienisz.zure
 
 ## TestFlight
 
-`scripts/testflight.sh` archives the app, signs it with Xcode cloud signing and uploads it to TestFlight. It needs an App Store Connect API key (role App Manager) in the environment: `APPLE_TEAM_ID`, `ASC_KEY_ID`, `ASC_ISSUER_ID` and `ASC_PRIVATE_KEY` (the `.p8` contents). The build number defaults to a UTC timestamp; override it with `BUILD_NUMBER`. Bump `MARKETING_VERSION` in `project.yml` for a new version.
+`scripts/testflight.sh` archives the app and uploads it to TestFlight. It needs an App Store Connect API key (role App Manager) in the environment: `APPLE_TEAM_ID`, `ASC_KEY_ID`, `ASC_ISSUER_ID` and `ASC_PRIVATE_KEY` (the `.p8` contents, with or without the PEM header lines). The build number defaults to a UTC timestamp; override it with `BUILD_NUMBER`. Bump `MARKETING_VERSION` in `project.yml` for a new version.
+
+An App Manager key cannot use Xcode cloud signing for distribution, so the export signs manually with an "Apple Distribution" certificate and the "ZUREQ Shopper App Store" profile. Both were created once through the App Store Connect API (`POST /v1/certificates`, `POST /v1/profiles`); the certificate sits in a dedicated `zureq-build` keychain so codesign never prompts for the login keychain password.
 
 ## Sign in with ZUREQ
 
