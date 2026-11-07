@@ -41,6 +41,9 @@ struct ProductDetailView: View {
                     }
                 }
                 if let details {
+                    if let net = details.priceNet, let gross = details.price, net != gross {
+                        LabeledContent("Net price", value: PriceFormat.string(net, currency: product.currency))
+                    }
                     LabeledContent("Stock", value: Freshness.stockLabel(details))
                     let freshness = Freshness.label(details)
                     if !freshness.isEmpty {

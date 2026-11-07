@@ -665,6 +665,16 @@
         }
       }
     },
+    "Net price": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena netto"
+          }
+        }
+      }
+    },
     "No checkout link returned.": {
       "localizations": {
         "pl": {
@@ -1075,6 +1085,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sklep"
+          }
+        }
+      }
+    },
+    "Show up to %lld results (3 credits)": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokaż do %lld wyników (3 kredyty)"
           }
         }
       }

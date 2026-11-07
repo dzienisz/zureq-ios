@@ -22,6 +22,12 @@ final class SearchModel {
     private(set) var products: [Product] = []
     private(set) var note: String?
     private(set) var searchedQuery = ""
+    /// search_products returns at most 50 rows; the first page asks for 20 and "Show more" re-runs the query for 50.
+    private(set) var limit = SearchModel.firstPage
+    private(set) var isLoadingMore = false
+
+    static let firstPage = 20
+    static let maxLimit = 50
 
     @ObservationIgnored private let defaults: UserDefaults
 
@@ -31,9 +37,11 @@ final class SearchModel {
     }
 
     var hasFilters: Bool { !maxPrice.isEmpty || !inStockOnly }
+    /// More rows may exist when the page came back full and we have not asked for the maximum yet.
+    var canLoadMore: Bool { phase == .results && !isLoadingMore && products.count >= limit && limit < Self.maxLimit }
 
     func arguments(for query: String) throws -> [String: JSONValue] {
-        var args: [String: JSONValue] = ["query": .string(query), "limit": 20, "inStockOnly": .bool(inStockOnly)]
+        var args: [String: JSONValue] = ["query": .string(query), "limit": .number(Double(limit)), "inStockOnly": .bool(inStockOnly)]
         args.merge(Location.arguments(for: market)) { _, new in new }
         switch PriceFormat.parseMaxPrice(maxPrice) {
         case .success(let value): if let value { args["maxPrice"] = .number(value) }
@@ -52,6 +60,7 @@ final class SearchModel {
         searchedQuery = text
         products = []
         note = nil
+        limit = Self.firstPage
         phase = .loading
         do {
             let args = try arguments(for: text)
@@ -65,9 +74,27 @@ final class SearchModel {
         }
     }
 
+    /// Re-runs the current query for the maximum page size (costs another search).
+    func loadMore(using app: AppModel) async {
+        guard canLoadMore else { return }
+        isLoadingMore = true
+        limit = Self.maxLimit
+        defer { isLoadingMore = false }
+        do {
+            let args = try arguments(for: searchedQuery)
+            let result: SearchResult = try await app.call("search_products", args) { $0.products.count }
+            products = result.products
+            note = result.note
+        } catch {
+            limit = Self.firstPage
+            phase = .failed((error as? ZureqError)?.message ?? String(localized: "Something went wrong. Please try again."))
+        }
+    }
+
     func reset() {
         products = []
         note = nil
+        limit = Self.firstPage
         phase = .idle
     }
 }

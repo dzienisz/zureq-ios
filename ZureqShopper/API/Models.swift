@@ -129,6 +129,7 @@ struct ProductDetails: Decodable, Sendable {
     var name: String?
     var description: String?
     var price: Double?
+    var priceNet: Double?
     var currency: String?
     var inStock: Bool?
     var stockQty: Int?
@@ -139,13 +140,14 @@ struct ProductDetails: Decodable, Sendable {
     var requiresVariant: Bool?
 
     enum CodingKeys: String, CodingKey {
-        case shopId, shopName, sku, name, description, price, currency, inStock, stockQty, imageUrl, live, syncedAt
+        case shopId, shopName, sku, name, description, price, priceNet, currency, inStock, stockQty, imageUrl, live, syncedAt
         case variants, requiresVariant
     }
 
-    init(price: Double? = nil, currency: String? = nil, inStock: Bool? = nil, stockQty: Int? = nil,
+    init(price: Double? = nil, priceNet: Double? = nil, currency: String? = nil, inStock: Bool? = nil, stockQty: Int? = nil,
          live: Bool? = nil, syncedAt: String? = nil, variants: [Variant]? = nil) {
         self.price = price
+        self.priceNet = priceNet
         self.currency = currency
         self.inStock = inStock
         self.stockQty = stockQty
@@ -162,6 +164,7 @@ struct ProductDetails: Decodable, Sendable {
         name = try c.decodeIfPresent(String.self, forKey: .name)?.decodingHTMLEntities
         description = try c.decodeIfPresent(String.self, forKey: .description)?.decodingHTMLEntities
         price = c.flexibleDouble(.price)
+        priceNet = c.flexibleDouble(.priceNet)
         currency = try c.decodeIfPresent(String.self, forKey: .currency)
         inStock = try c.decodeIfPresent(Bool.self, forKey: .inStock)
         stockQty = c.flexibleDouble(.stockQty).map { Int($0) }

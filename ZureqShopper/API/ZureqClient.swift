@@ -102,7 +102,8 @@ final class ZureqClient: Sendable {
                 }
                 return try Self.parse(data: data, status: response.statusCode, as: T.self)
             } catch let error as ZureqError where error.isRetryable && attempt < 2 {
-                try await Task.sleep(for: retryDelay)
+                // docs.zureq.io: a 429 clears within the fixed one-minute window, so ~1 s is enough; shop timeouts get the full delay.
+                try await Task.sleep(for: error.code == .rateLimit ? min(retryDelay, .seconds(1)) : retryDelay)
             }
         }
     }

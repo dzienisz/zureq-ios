@@ -122,7 +122,21 @@ struct SearchView: View {
                             }
                     }
                 } footer: {
-                    if let note = model.note { Text(note) }
+                    VStack(alignment: .leading, spacing: 8) {
+                        if let note = model.note { Text(note) }
+                        if model.canLoadMore {
+                            Button {
+                                Task { await model.loadMore(using: app) }
+                            } label: {
+                                Text("Show up to \(SearchModel.maxLimit) results (3 credits)")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
+                            .padding(.top, 4)
+                        } else if model.isLoadingMore {
+                            HStack { ProgressView(); Text("Searching shops…") }.frame(maxWidth: .infinity)
+                        }
+                    }
                 }
             }
             .listStyle(.plain)

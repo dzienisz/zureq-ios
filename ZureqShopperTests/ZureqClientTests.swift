@@ -175,6 +175,20 @@ final class HelperTests: XCTestCase {
         XCTAssertEqual(args["inStockOnly"], true)
     }
 
+    @MainActor
+    func testSearchArgumentsPageSizeGrowsOnLoadMore() throws {
+        let model = SearchModel(defaults: UserDefaults(suiteName: "ZureqShopperTests")!)
+        XCTAssertEqual(try model.arguments(for: "tee")["limit"], 20)
+        XCTAssertFalse(model.canLoadMore)
+    }
+
+    func testDecodesNetPrice() throws {
+        let json = #"{"price":"123","priceNet":100,"currency":"PLN","inStock":true}"#
+        let details = try JSONDecoder().decode(ProductDetails.self, from: Data(json.utf8))
+        XCTAssertEqual(details.price, 123)
+        XCTAssertEqual(details.priceNet, 100)
+    }
+
     func testDecodesHTMLEntities() {
         XCTAssertEqual("Bluetooth &#8211; FM &amp; MP3 &#x2014; &quot;x&quot;".decodingHTMLEntities, "Bluetooth \u{2013} FM & MP3 \u{2014} \"x\"")
         XCTAssertEqual("A & B &bogus; &".decodingHTMLEntities, "A & B &bogus; &")
