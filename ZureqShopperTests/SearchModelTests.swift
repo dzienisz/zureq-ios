@@ -4,19 +4,23 @@ import XCTest
 /// Holds each request until the test releases it, so answers can arrive out of order.
 private final class GatedTransport: HTTPTransport, @unchecked Sendable {
     private let lock = NSLock()
-    private var waiting: [CheckedContinuation<String, Never>] = []
+    private var waiting: [(request: String, continuation: CheckedContinuation<String, Never>)] = []
 
     var pending: Int { lock.withLock { waiting.count } }
 
     func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let sent = String(decoding: request.httpBody ?? Data(), as: UTF8.self)
         let body = await withCheckedContinuation { continuation in
-            lock.withLock { waiting.append(continuation) }
+            lock.withLock { waiting.append((sent, continuation)) }
         }
         return (Data(body.utf8), HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!)
     }
 
-    func release(_ index: Int, _ body: String) {
-        lock.withLock { waiting[index] }.resume(returning: body)
+    /// Answers the held request whose body mentions `query`; requests are not guaranteed to arrive in call order.
+    func release(query: String, _ body: String) {
+        let held = lock.withLock { waiting.first { $0.request.contains(query) } }
+        XCTAssertNotNil(held, "no held request for \(query)")
+        held?.continuation.resume(returning: body)
     }
 }
 
@@ -72,11 +76,12 @@ final class SearchModelTests: XCTestCase {
         let model = SearchModel(defaults: defaults)
 
         let first = Task { await model.search(using: app, query: "tea") }
+        while gate.pending < 1 { await Task.yield() }
         let second = Task { await model.search(using: app, query: "coffee") }
         while gate.pending < 2 { await Task.yield() }
-        gate.release(1, Self.results(["Coffee"]))
+        gate.release(query: "coffee", Self.results(["Coffee"]))
         await second.value
-        gate.release(0, Self.results(["Tea"]))
+        gate.release(query: "tea", Self.results(["Tea"]))
         await first.value
 
         XCTAssertEqual(model.searchedQuery, "coffee")
@@ -92,7 +97,7 @@ final class SearchModelTests: XCTestCase {
         let search = Task { await model.search(using: app, query: "tea") }
         while gate.pending < 1 { await Task.yield() }
         model.reset()
-        gate.release(0, Self.results(["Tea"]))
+        gate.release(query: "tea", Self.results(["Tea"]))
         await search.value
 
         XCTAssertEqual(model.phase, .idle)
