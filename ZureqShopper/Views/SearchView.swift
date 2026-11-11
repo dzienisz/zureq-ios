@@ -11,6 +11,7 @@ struct SearchView: View {
             content
                 .navigationTitle("ZUREQ")
                 .searchable(text: $model.query, prompt: "What are you looking for?")
+                .keepingToolbarDuringSearch()
                 .onSubmit(of: .search) { Task { await model.search(using: app) } }
                 .onChange(of: model.query) { _, newValue in
                     if newValue.isEmpty { model.reset() }
@@ -313,5 +314,16 @@ struct FlowLayout: Layout {
             rows[rows.count - 1] = row
         }
         return rows
+    }
+}
+
+private extension View {
+    /// Typed searches leave the search field active; without this the market, sort and filter buttons stay hidden.
+    @ViewBuilder func keepingToolbarDuringSearch() -> some View {
+        if #available(iOS 17.1, *) {
+            searchPresentationToolbarBehavior(.avoidHidingContent)
+        } else {
+            self
+        }
     }
 }
