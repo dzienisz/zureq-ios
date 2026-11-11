@@ -17,6 +17,7 @@ struct CreditsBadge: View {
                         .font(.caption2)
                 }
                 .labelStyle(.titleAndIcon)
+                .fixedSize()
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
                 .background(state.tint.opacity(0.15), in: Capsule())
