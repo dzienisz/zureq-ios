@@ -17,6 +17,17 @@ struct SearchView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) { MarketMenu(selection: $model.market) }
+                    if model.phase == .results {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Menu {
+                                Picker("Sort", selection: $model.sort) {
+                                    ForEach(Sort.allCases) { Text($0.title).tag($0) }
+                                }
+                            } label: {
+                                Label("Sort", systemImage: "arrow.up.arrow.down")
+                            }
+                        }
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button { showFilters = true } label: {
                             Label("Filters", systemImage: model.hasFilters
@@ -81,6 +92,7 @@ struct SearchView: View {
                                 Label(item, systemImage: "clock.arrow.circlepath").foregroundStyle(.primary)
                             }
                         }
+                        .onDelete { app.removeHistory(at: $0) }
                     } header: {
                         HStack {
                             Text("Recent searches")
@@ -111,7 +123,7 @@ struct SearchView: View {
         case .results:
             List {
                 Section {
-                    ForEach(model.products) { product in
+                    ForEach(model.sortedProducts) { product in
                         NavigationLink(value: product) { ProductRow(product: product) }
                             .swipeActions(edge: .leading) {
                                 let watched = watchlist.contains(product)
@@ -123,7 +135,11 @@ struct SearchView: View {
                     }
                 } footer: {
                     VStack(alignment: .leading, spacing: 8) {
+                        if model.sort != .relevance, model.hasMixedCurrencies {
+                            Text("Prices are in different currencies, so they are sorted within each currency.")
+                        }
                         if let note = model.note { Text(note) }
+                        if let error = model.loadMoreError { Text(error).foregroundStyle(.red) }
                         if model.canLoadMore {
                             Button {
                                 Task { await model.loadMore(using: app) }

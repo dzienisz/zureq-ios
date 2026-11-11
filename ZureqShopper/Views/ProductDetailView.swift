@@ -53,6 +53,7 @@ struct ProductDetailView: View {
                     HStack { ProgressView(); Text("Checking live price…").foregroundStyle(.secondary) }
                 } else if let loadError {
                     Label(loadError, systemImage: "exclamationmark.triangle").foregroundStyle(.orange)
+                    Button("Try again") { Task { await loadDetails() } }
                 }
             }
             if let variants = details?.variants, !variants.isEmpty {
@@ -108,8 +109,9 @@ struct ProductDetailView: View {
     }
 
     private func loadDetails() async {
-        guard details == nil else { return }
+        guard details == nil, !isLoading else { return }
         isLoading = true
+        loadError = nil
         defer { isLoading = false }
         do {
             let live: ProductDetails = try await app.call("get_product", ["shopId": .string(product.shopId), "sku": .string(product.sku)])

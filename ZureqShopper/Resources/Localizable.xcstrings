@@ -865,6 +865,36 @@
         }
       }
     },
+    "Price: high to low": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena: od najwyższej"
+          }
+        }
+      }
+    },
+    "Price: low to high": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena: od najniższej"
+          }
+        }
+      }
+    },
+    "Prices are in different currencies, so they are sorted within each currency.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ceny są w różnych walutach, więc sortowanie działa w obrębie każdej waluty."
+          }
+        }
+      }
+    },
     "Product": {
       "localizations": {
         "pl": {
@@ -901,6 +931,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odświeżenie sprawdza każdą cenę za 1 kredyt (łącznie %lld)."
+          }
+        }
+      }
+    },
+    "Relevance": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trafność"
           }
         }
       }
@@ -1165,6 +1205,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Coś poszło nie tak. Spróbuj ponownie."
+          }
+        }
+      }
+    },
+    "Sort": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sortuj"
           }
         }
       }

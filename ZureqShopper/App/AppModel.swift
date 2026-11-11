@@ -114,6 +114,11 @@ final class AppModel {
         defaults.set(history, forKey: Self.historyKey)
     }
 
+    func removeHistory(at offsets: IndexSet) {
+        history = history.enumerated().filter { !offsets.contains($0.offset) }.map(\.element)
+        defaults.set(history, forKey: Self.historyKey)
+    }
+
     func clearHistory() {
         history = []
         defaults.removeObject(forKey: Self.historyKey)
