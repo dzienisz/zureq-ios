@@ -28,6 +28,7 @@ struct ProductDetailView: View {
             }
             Section {
                 Text(product.name).font(.title3.weight(.semibold))
+                if product.hasInPostPay { InPostPayBadge() }
                 LabeledContent("Shop", value: product.shopName ?? product.shopId)
                 LabeledContent("Price") {
                     HStack(spacing: 6) {
@@ -148,8 +149,9 @@ struct ProductDetailView: View {
 
     /// Prefer get_product's live price over the indexed search price; remember the old one if it changed.
     static func applyLiveDetails(_ product: Product, _ details: ProductDetails) -> (product: Product, previousPrice: Double?) {
-        guard let price = details.price, price.isFinite else { return (product, nil) }
         var updated = product
+        if let flags = details.flags { updated.flags = flags }
+        guard let price = details.price, price.isFinite else { return (updated, nil) }
         updated.price = price
         updated.currency = details.currency ?? product.currency
         updated.inStock = details.inStock ?? product.inStock

@@ -163,6 +163,19 @@ final class HelperTests: XCTestCase {
         XCTAssertNil(ProductDetailView.applyLiveDetails(product, ProductDetails()).previousPrice)
     }
 
+    func testLiveDetailsBringPaymentFlags() throws {
+        let product = Product(shopId: "s", sku: "1", name: "X", price: 10, currency: "PLN")
+        XCTAssertFalse(product.hasInPostPay)
+        let details = try JSONDecoder().decode(ProductDetails.self, from: Data(#"{"sku":"1","flags":["inpost_pay"]}"#.utf8))
+        XCTAssertTrue(ProductDetailView.applyLiveDetails(product, details).product.hasInPostPay)
+        // A row saved before flags existed still decodes, and a filtered row loses the mark when the shop reports none.
+        let saved = try JSONDecoder().decode(Product.self, from: Data(#"{"shopId":"s","sku":"1","name":"X"}"#.utf8))
+        XCTAssertNil(saved.flags)
+        let marked = Product(shopId: "s", sku: "1", name: "X", flags: ["inpost_pay"])
+        XCTAssertFalse(ProductDetailView.applyLiveDetails(marked, ProductDetails(flags: [])).product.hasInPostPay)
+        XCTAssertTrue(ProductDetailView.applyLiveDetails(marked, ProductDetails()).product.hasInPostPay)
+    }
+
     @MainActor
     func testSearchArgumentsUseRegionForEU() throws {
         let model = SearchModel(defaults: UserDefaults(suiteName: "ZureqShopperTests")!)

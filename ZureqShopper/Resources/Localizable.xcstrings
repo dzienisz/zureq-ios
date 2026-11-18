@@ -595,6 +595,16 @@
         }
       }
     },
+    "InPost Pay only": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tylko InPost Pay"
+          }
+        }
+      }
+    },
     "Items": {
       "localizations": {
         "pl": {
@@ -791,6 +801,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Po jednej w wierszu lub po przecinku, najwyżej %lld."
+          }
+        }
+      }
+    },
+    "Only products you can pay for with InPost Pay.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tylko produkty, za które zapłacisz przez InPost Pay."
           }
         }
       }

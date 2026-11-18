@@ -40,12 +40,16 @@ struct Product: Codable, Hashable, Identifiable, Sendable {
     var inStock: Bool?
     var category: String?
     var imageUrl: String?
+    /// Payment flags such as `inpost_pay`. search_products rows carry none; get_product does.
+    var flags: [String]?
 
     var id: String { "\(shopId)|\(sku)" }
     var imageURL: URL? { imageUrl.flatMap(URL.init(string:)) }
+    var hasInPostPay: Bool { flags?.contains(ProductFlag.inPostPay) == true }
 
     init(shopId: String, shopName: String? = nil, sku: String, name: String, price: Double? = nil,
-         currency: String? = nil, inStock: Bool? = nil, category: String? = nil, imageUrl: String? = nil) {
+         currency: String? = nil, inStock: Bool? = nil, category: String? = nil, imageUrl: String? = nil,
+         flags: [String]? = nil) {
         self.shopId = shopId
         self.shopName = shopName
         self.sku = sku
@@ -55,10 +59,11 @@ struct Product: Codable, Hashable, Identifiable, Sendable {
         self.inStock = inStock
         self.category = category
         self.imageUrl = imageUrl
+        self.flags = flags
     }
 
     enum CodingKeys: String, CodingKey {
-        case shopId, shopName, sku, name, price, currency, inStock, category, imageUrl
+        case shopId, shopName, sku, name, price, currency, inStock, category, imageUrl, flags
     }
 
     init(from decoder: Decoder) throws {
@@ -72,7 +77,12 @@ struct Product: Codable, Hashable, Identifiable, Sendable {
         inStock = try c.decodeIfPresent(Bool.self, forKey: .inStock)
         category = try c.decodeIfPresent(String.self, forKey: .category)
         imageUrl = try c.decodeIfPresent(String.self, forKey: .imageUrl)
+        flags = try? c.decodeIfPresent([String].self, forKey: .flags)
     }
+}
+
+enum ProductFlag {
+    static let inPostPay = "inpost_pay"
 }
 
 struct SearchResult: Decodable, Sendable {
@@ -138,14 +148,15 @@ struct ProductDetails: Decodable, Sendable {
     var syncedAt: String?
     var variants: [Variant]?
     var requiresVariant: Bool?
+    var flags: [String]?
 
     enum CodingKeys: String, CodingKey {
         case shopId, shopName, sku, name, description, price, priceNet, currency, inStock, stockQty, imageUrl, live, syncedAt
-        case variants, requiresVariant
+        case variants, requiresVariant, flags
     }
 
     init(price: Double? = nil, priceNet: Double? = nil, currency: String? = nil, inStock: Bool? = nil, stockQty: Int? = nil,
-         live: Bool? = nil, syncedAt: String? = nil, variants: [Variant]? = nil) {
+         live: Bool? = nil, syncedAt: String? = nil, variants: [Variant]? = nil, flags: [String]? = nil) {
         self.price = price
         self.priceNet = priceNet
         self.currency = currency
@@ -154,6 +165,7 @@ struct ProductDetails: Decodable, Sendable {
         self.live = live
         self.syncedAt = syncedAt
         self.variants = variants
+        self.flags = flags
     }
 
     init(from decoder: Decoder) throws {
@@ -173,6 +185,7 @@ struct ProductDetails: Decodable, Sendable {
         syncedAt = try c.decodeIfPresent(String.self, forKey: .syncedAt)
         variants = try? c.decodeIfPresent([Variant].self, forKey: .variants)
         requiresVariant = try c.decodeIfPresent(Bool.self, forKey: .requiresVariant)
+        flags = try? c.decodeIfPresent([String].self, forKey: .flags)
     }
 }
 
