@@ -163,6 +163,20 @@ final class HelperTests: XCTestCase {
         XCTAssertNil(ProductDetailView.applyLiveDetails(product, ProductDetails()).previousPrice)
     }
 
+    func testCheckoutLinkThatIsTheProductPage() throws {
+        let page = "https://shop.pl/p/mug/51473"
+        XCTAssertTrue(CheckoutLink(checkoutUrl: page).opensProductPage(productUrl: page))
+        XCTAssertTrue(CheckoutLink(checkoutUrl: page + "/").opensProductPage(productUrl: page))
+        XCTAssertFalse(CheckoutLink(checkoutUrl: "https://shop.pl/cart/1:1").opensProductPage(productUrl: page))
+        XCTAssertFalse(CheckoutLink(checkoutUrl: page + "?add-to-cart=7").opensProductPage(productUrl: page))
+        XCTAssertFalse(CheckoutLink(checkoutUrl: page).opensProductPage(productUrl: nil))
+        let unprepared = try JSONDecoder().decode(CheckoutLink.self, from: Data(#"{"checkoutUrl":"https://shop.pl/x","cartPrepared":false}"#.utf8))
+        XCTAssertTrue(unprepared.opensProductPage(productUrl: nil))
+        let details = try JSONDecoder().decode(ProductDetails.self, from: Data(#"{"sku":"1","productUrl":"https://shop.pl/p/mug/51473"}"#.utf8))
+        let product = Product(shopId: "s", sku: "1", name: "X")
+        XCTAssertEqual(ProductDetailView.applyLiveDetails(product, details).product.productUrl, page)
+    }
+
     func testLiveDetailsBringPaymentFlags() throws {
         let product = Product(shopId: "s", sku: "1", name: "X", price: 10, currency: "PLN")
         XCTAssertFalse(product.hasInPostPay)

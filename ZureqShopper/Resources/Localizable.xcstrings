@@ -825,6 +825,16 @@
         }
       }
     },
+    "Open product page in Safari": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otwórz stronę produktu w Safari"
+          }
+        }
+      }
+    },
     "Opens the shop's checkout in Safari. You pay on the shop's own site. Costs 1 credit.": {
       "localizations": {
         "pl": {
@@ -1305,6 +1315,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapytanie nie zostało przyjęte. Sprawdź pola wyszukiwania."
+          }
+        }
+      }
+    },
+    "The shop sends you to the product page, not a cart. Add the item to the cart there.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sklep kieruje na stronę produktu, a nie do koszyka. Dodaj tam produkt do koszyka."
           }
         }
       }

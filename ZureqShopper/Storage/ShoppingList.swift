@@ -37,6 +37,8 @@ struct CartLink: Identifiable, Hashable, Sendable {
     var label: String
     var url: URL?
     var error: String?
+    /// The link leads to the product page; the buyer adds the item to the cart there.
+    var opensProductPage = false
 
     var id: String { label }
 }
@@ -228,7 +230,7 @@ final class ShoppingList {
         for (index, chunk) in chunks.enumerated() {
             let label = chunks.count == 1 ? String(localized: "Cart") : String(localized: "Cart \(index + 1) of \(chunks.count)")
             do {
-                links.append(CartLink(label: label, url: try await Self.link(shopId, chunk, createLink)))
+                links.append(try await Self.link(label, shopId, chunk, createLink))
             } catch let error as ZureqError where error.stopsBatch {
                 links.append(CartLink(label: label, error: error.message))
                 break
@@ -239,7 +241,7 @@ final class ShoppingList {
                 }
                 for part in chunk {
                     do {
-                        links.append(CartLink(label: "\(label): \(part.query)", url: try await Self.link(shopId, [part], createLink)))
+                        links.append(try await Self.link("\(label): \(part.query)", shopId, [part], createLink))
                     } catch {
                         links.append(CartLink(label: "\(label): \(part.query)", error: Self.message(error)))
                     }
@@ -261,13 +263,15 @@ final class ShoppingList {
         return stride(from: 0, to: items.count, by: size).map { Array(items[$0..<min($0 + size, items.count)]) }
     }
 
-    private static func link(_ shopId: String, _ parts: [ListPart],
-                             _ createLink: (String, [String]) async throws -> CheckoutLink) async throws -> URL {
+    private static func link(_ label: String, _ shopId: String, _ parts: [ListPart],
+                             _ createLink: (String, [String]) async throws -> CheckoutLink) async throws -> CartLink {
         let link = try await createLink(shopId, parts.compactMap(\.checkoutSku))
         guard let url = URL(string: link.checkoutUrl), url.scheme == "https" || url.scheme == "http" else {
             throw ZureqError(code: .parseError, message: String(localized: "The shop returned an invalid checkout link."))
         }
-        return url
+        // A link for several items is never one product's page.
+        let productUrl = parts.count == 1 ? parts[0].pick?.productUrl : nil
+        return CartLink(label: label, url: url, opensProductPage: link.opensProductPage(productUrl: productUrl))
     }
 
     private static func message(_ error: Error) -> String {

@@ -204,9 +204,18 @@ private struct ShopGroupRow: View {
             ForEach(list.carts[group.shopId] ?? []) { cart in
                 if let url = cart.url {
                     Button { open(url) } label: {
-                        Label("Open \(cart.label.lowercased()) in Safari", systemImage: "safari")
+                        if cart.opensProductPage {
+                            Label("Open product page in Safari", systemImage: "safari")
+                        } else {
+                            Label("Open \(cart.label.lowercased()) in Safari", systemImage: "safari")
+                        }
                     }
                     .buttonStyle(.bordered)
+                    if cart.opensProductPage {
+                        Text("The shop sends you to the product page, not a cart. Add the item to the cart there.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
                 } else {
                     Text("\(cart.label): \(cart.error ?? String(localized: "No checkout link returned."))")
                         .font(.footnote)
