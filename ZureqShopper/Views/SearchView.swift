@@ -9,7 +9,7 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle("ZUREQ")
+                .navigationTitle(crowdsTitle ? "" : "ZUREQ")
                 .searchable(text: $model.query, placement: .navigationBarDrawer(displayMode: .always), prompt: "What are you looking for?")
                 .keepingToolbarDuringSearch()
                 .onSubmit(of: .search) { Task { await model.search(using: app) } }
@@ -41,6 +41,11 @@ struct SearchView: View {
                 .navigationDestination(for: Product.self) { ProductDetailView(product: $0) }
                 .task { await app.loadMarkets() }
         }
+    }
+
+    /// iOS 27 keeps the title inline beside the toolbar buttons; with Sort added it is cut to "ZU…".
+    private var crowdsTitle: Bool {
+        if #available(iOS 27, *) { model.phase == .results } else { false }
     }
 
     private static let suggestions: [String] = [
