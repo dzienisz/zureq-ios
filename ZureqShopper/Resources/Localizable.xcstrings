@@ -595,6 +595,16 @@
         }
       }
     },
+    "InPost Pay only": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tylko InPost Pay"
+          }
+        }
+      }
+    },
     "Items": {
       "localizations": {
         "pl": {
@@ -795,12 +805,32 @@
         }
       }
     },
+    "Only products you can pay for with InPost Pay.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tylko produkty, za które zapłacisz przez InPost Pay."
+          }
+        }
+      }
+    },
     "Open %@ in Safari": {
       "localizations": {
         "pl": {
           "stringUnit": {
             "state": "translated",
             "value": "Otwórz %@ w Safari"
+          }
+        }
+      }
+    },
+    "Open product page in Safari": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otwórz stronę produktu w Safari"
           }
         }
       }
@@ -1285,6 +1315,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zapytanie nie zostało przyjęte. Sprawdź pola wyszukiwania."
+          }
+        }
+      }
+    },
+    "The shop sends you to the product page, not a cart. Add the item to the cart there.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sklep kieruje na stronę produktu, a nie do koszyka. Dodaj tam produkt do koszyka."
           }
         }
       }

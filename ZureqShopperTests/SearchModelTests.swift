@@ -104,6 +104,30 @@ final class SearchModelTests: XCTestCase {
         XCTAssertTrue(model.products.isEmpty)
     }
 
+    func testInPostPayFilterSendsTheFlagAndMarksItsRows() async throws {
+        let stub = StubTransport([(200, Self.results(["Mug"])), (200, Self.results(["Mug"]))])
+        let app = AppModel(keychain: keychain, defaults: defaults, transport: stub)
+        let model = SearchModel(defaults: defaults)
+
+        await model.search(using: app, query: "mug")
+        XCTAssertFalse(String(decoding: stub.requests[0].httpBody ?? Data(), as: UTF8.self).contains("flags"))
+        XCTAssertFalse(model.products[0].hasInPostPay)
+
+        model.inPostPayOnly = true
+        XCTAssertTrue(model.hasFilters)
+        XCTAssertEqual(try model.arguments(for: "mug")["flags"], [.string("inpost_pay")])
+        await model.search(using: app, query: "mug")
+        XCTAssertTrue(String(decoding: stub.requests[1].httpBody ?? Data(), as: UTF8.self).contains(#""flags":["inpost_pay"]"#))
+        XCTAssertTrue(model.products[0].hasInPostPay)
+    }
+
+    func testFlagsFromTheApiAreKeptWhenTaggingRows() {
+        let rows = [product("a", 1), Product(shopId: "a-pl", sku: "b", name: "b", flags: ["other"])]
+        let tagged = SearchModel.tagged(rows, with: ["flags": [.string("inpost_pay")]])
+        XCTAssertEqual(tagged.map(\.flags), [["inpost_pay"], ["other"]])
+        XCTAssertEqual(SearchModel.tagged(rows, with: [:]).map(\.flags), [nil, ["other"]])
+    }
+
     func testSortsByPriceWithUnpricedRowsLast() {
         let rows = [product("a", 30), product("b", nil), product("c", 10), product("d", 20)]
         XCTAssertEqual(SearchModel.sorted(rows, by: .relevance).map(\.sku), ["a", "b", "c", "d"])

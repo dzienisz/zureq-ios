@@ -132,6 +132,24 @@ final class ShoppingListTests: XCTestCase {
         XCTAssertEqual(carts[1].error, "Sold out")
     }
 
+    func testCheckoutMarksALinkThatIsTheProductPage() async {
+        // The search row has no productUrl; the live details do.
+        let item = product("a", "1", 1)
+        let list = await searched("x", results: ["x": [item]])
+        list.togglePick(item, in: 0)
+        await list.checkout(list.groups[0],
+                            fetchDetails: { _ in ProductDetails(price: 1, productUrl: "https://shop.example/p/1/") },
+                            fetchShop: { _ in ShopInfo(checkoutLinkSupported: true) },
+                            createLink: { _, _ in CheckoutLink(checkoutUrl: "https://shop.example/p/1") })
+        XCTAssertEqual(list.carts["a"]?.map(\.opensProductPage), [true])
+
+        await list.checkout(list.groups[0],
+                            fetchDetails: { _ in ProductDetails(price: 1) },
+                            fetchShop: { _ in ShopInfo(checkoutLinkSupported: true) },
+                            createLink: { _, _ in CheckoutLink(checkoutUrl: "https://shop.example/cart/1:1") })
+        XCTAssertEqual(list.carts["a"]?.map(\.opensProductPage), [false])
+    }
+
     func testCheckoutBlocksOnMissingVariantAndUnsupportedShopAndCachesShop() async {
         let a1 = product("a", "1", 10)
         let list = await searched("x", results: ["x": [a1]])

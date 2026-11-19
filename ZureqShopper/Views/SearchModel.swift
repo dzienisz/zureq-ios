@@ -18,6 +18,7 @@ final class SearchModel {
     }
     var maxPrice = ""
     var inStockOnly = true
+    var inPostPayOnly = false
     var sort: Sort = .relevance
     private(set) var phase: Phase = .idle
     private(set) var products: [Product] = []
@@ -40,13 +41,14 @@ final class SearchModel {
         market = defaults.string(forKey: "zureqCountry") ?? ""
     }
 
-    var hasFilters: Bool { !maxPrice.isEmpty || !inStockOnly }
+    var hasFilters: Bool { !maxPrice.isEmpty || !inStockOnly || inPostPayOnly }
     /// More rows may exist when the page came back full and we have not asked for the maximum yet.
     var canLoadMore: Bool { phase == .results && !isLoadingMore && products.count >= limit && limit < Self.maxLimit }
 
     func arguments(for query: String) throws -> [String: JSONValue] {
         var args: [String: JSONValue] = ["query": .string(query), "limit": .number(Double(limit)), "inStockOnly": .bool(inStockOnly)]
         args.merge(Location.arguments(for: market)) { _, new in new }
+        if inPostPayOnly { args["flags"] = [.string(ProductFlag.inPostPay)] }
         switch PriceFormat.parseMaxPrice(maxPrice) {
         case .success(let value): if let value { args["maxPrice"] = .number(value) }
         case .failure(let error): throw error
@@ -75,7 +77,7 @@ final class SearchModel {
             let result: SearchResult = try await app.call("search_products", args) { $0.products.count }
             guard request == generation else { return }
             app.addHistory(text)
-            products = result.products
+            products = Self.tagged(result.products, with: args)
             note = result.note
             phase = result.products.isEmpty ? .empty : .results
         } catch {
@@ -95,7 +97,7 @@ final class SearchModel {
             let args = try arguments(for: searchedQuery)
             let result: SearchResult = try await app.call("search_products", args) { $0.products.count }
             guard request == generation else { return }
-            if !result.products.isEmpty { products = result.products }
+            if !result.products.isEmpty { products = Self.tagged(result.products, with: args) }
             note = result.note
         } catch {
             guard request == generation else { return }
@@ -113,6 +115,21 @@ final class SearchModel {
         isLoadingMore = false
         limit = Self.firstPage
         phase = .idle
+    }
+
+    /// search_products rows carry no flags, so a search filtered by flags marks its own rows.
+    nonisolated static func tagged(_ products: [Product], with arguments: [String: JSONValue]) -> [Product] {
+        guard case .array(let values)? = arguments["flags"] else { return products }
+        let flags = values.compactMap { value -> String? in
+            if case .string(let flag) = value { return flag }
+            return nil
+        }
+        guard !flags.isEmpty else { return products }
+        return products.map { product in
+            var tagged = product
+            if tagged.flags == nil { tagged.flags = flags }
+            return tagged
+        }
     }
 
     /// Rows in the chosen order. Sorting is local, so it costs no credits.

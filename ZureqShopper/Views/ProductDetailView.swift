@@ -10,6 +10,7 @@ struct ProductDetailView: View {
     @State private var variantSku: String?
     @State private var loadError: String?
     @State private var checkoutError: String?
+    @State private var openedProductPage = false
     @State private var isLoading = false
     @State private var isOpeningCheckout = false
 
@@ -28,6 +29,7 @@ struct ProductDetailView: View {
             }
             Section {
                 Text(product.name).font(.title3.weight(.semibold))
+                if product.hasInPostPay { InPostPayBadge() }
                 LabeledContent("Shop", value: product.shopName ?? product.shopId)
                 LabeledContent("Price") {
                     HStack(spacing: 6) {
@@ -87,6 +89,10 @@ struct ProductDetailView: View {
             } footer: {
                 VStack(alignment: .leading, spacing: 6) {
                     if let checkoutError { Text(checkoutError).foregroundStyle(.red) }
+                    if openedProductPage {
+                        Text("The shop sends you to the product page, not a cart. Add the item to the cart there.")
+                            .foregroundStyle(.primary)
+                    }
                     Text("Opens the shop's checkout in Safari. You pay on the shop's own site. Costs 1 credit.")
                 }
             }
@@ -129,6 +135,7 @@ struct ProductDetailView: View {
     private func openCheckout() async {
         isOpeningCheckout = true
         checkoutError = nil
+        openedProductPage = false
         defer { isOpeningCheckout = false }
         do {
             let sku = variantSku ?? product.sku
@@ -140,6 +147,7 @@ struct ProductDetailView: View {
                 checkoutError = String(localized: "The shop returned an invalid checkout link.")
                 return
             }
+            openedProductPage = link.opensProductPage(productUrl: product.productUrl)
             openURL(url)
         } catch {
             checkoutError = (error as? ZureqError)?.message ?? String(localized: "Could not open the checkout.")
@@ -148,8 +156,10 @@ struct ProductDetailView: View {
 
     /// Prefer get_product's live price over the indexed search price; remember the old one if it changed.
     static func applyLiveDetails(_ product: Product, _ details: ProductDetails) -> (product: Product, previousPrice: Double?) {
-        guard let price = details.price, price.isFinite else { return (product, nil) }
         var updated = product
+        if let flags = details.flags { updated.flags = flags }
+        if let url = details.productUrl { updated.productUrl = url }
+        guard let price = details.price, price.isFinite else { return (updated, nil) }
         updated.price = price
         updated.currency = details.currency ?? product.currency
         updated.inStock = details.inStock ?? product.inStock

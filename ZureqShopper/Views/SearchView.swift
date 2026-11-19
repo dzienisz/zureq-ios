@@ -214,10 +214,16 @@ struct FiltersSheet: View {
                     Text("In the shop's own currency.")
                 }
                 Toggle("In stock only", isOn: $model.inStockOnly)
+                Section {
+                    Toggle("InPost Pay only", isOn: $model.inPostPayOnly)
+                } footer: {
+                    Text("Only products you can pay for with InPost Pay.")
+                }
                 if model.hasFilters {
                     Button("Reset filters", role: .destructive) {
                         model.maxPrice = ""
                         model.inStockOnly = true
+                        model.inPostPayOnly = false
                     }
                 }
             }
@@ -250,9 +256,23 @@ struct ProductRow: View {
                         Text("Out of stock").font(.caption).foregroundStyle(.red)
                     }
                 }
+                if product.hasInPostPay { InPostPayBadge() }
             }
         }
         .padding(.vertical, 4)
+    }
+}
+
+struct InPostPayBadge: View {
+    private static let yellow = Color(red: 1, green: 0.8, blue: 0)
+
+    var body: some View {
+        Text(verbatim: "InPost Pay")
+            .font(.caption2.weight(.bold))
+            .padding(.horizontal, 7)
+            .padding(.vertical, 2)
+            .background(Self.yellow.opacity(0.18), in: Capsule())
+            .overlay(Capsule().stroke(Self.yellow))
     }
 }
 

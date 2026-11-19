@@ -40,12 +40,18 @@ struct Product: Codable, Hashable, Identifiable, Sendable {
     var inStock: Bool?
     var category: String?
     var imageUrl: String?
+    /// Payment flags such as `inpost_pay`. search_products rows carry none; get_product does.
+    var flags: [String]?
+    /// Missing from some search_products rows; get_product has it.
+    var productUrl: String?
 
     var id: String { "\(shopId)|\(sku)" }
     var imageURL: URL? { imageUrl.flatMap(URL.init(string:)) }
+    var hasInPostPay: Bool { flags?.contains(ProductFlag.inPostPay) == true }
 
     init(shopId: String, shopName: String? = nil, sku: String, name: String, price: Double? = nil,
-         currency: String? = nil, inStock: Bool? = nil, category: String? = nil, imageUrl: String? = nil) {
+         currency: String? = nil, inStock: Bool? = nil, category: String? = nil, imageUrl: String? = nil,
+         flags: [String]? = nil, productUrl: String? = nil) {
         self.shopId = shopId
         self.shopName = shopName
         self.sku = sku
@@ -55,10 +61,12 @@ struct Product: Codable, Hashable, Identifiable, Sendable {
         self.inStock = inStock
         self.category = category
         self.imageUrl = imageUrl
+        self.flags = flags
+        self.productUrl = productUrl
     }
 
     enum CodingKeys: String, CodingKey {
-        case shopId, shopName, sku, name, price, currency, inStock, category, imageUrl
+        case shopId, shopName, sku, name, price, currency, inStock, category, imageUrl, flags, productUrl
     }
 
     init(from decoder: Decoder) throws {
@@ -72,7 +80,13 @@ struct Product: Codable, Hashable, Identifiable, Sendable {
         inStock = try c.decodeIfPresent(Bool.self, forKey: .inStock)
         category = try c.decodeIfPresent(String.self, forKey: .category)
         imageUrl = try c.decodeIfPresent(String.self, forKey: .imageUrl)
+        flags = try? c.decodeIfPresent([String].self, forKey: .flags)
+        productUrl = try? c.decodeIfPresent(String.self, forKey: .productUrl)
     }
+}
+
+enum ProductFlag {
+    static let inPostPay = "inpost_pay"
 }
 
 struct SearchResult: Decodable, Sendable {
@@ -138,14 +152,17 @@ struct ProductDetails: Decodable, Sendable {
     var syncedAt: String?
     var variants: [Variant]?
     var requiresVariant: Bool?
+    var flags: [String]?
+    var productUrl: String?
 
     enum CodingKeys: String, CodingKey {
         case shopId, shopName, sku, name, description, price, priceNet, currency, inStock, stockQty, imageUrl, live, syncedAt
-        case variants, requiresVariant
+        case variants, requiresVariant, flags, productUrl
     }
 
     init(price: Double? = nil, priceNet: Double? = nil, currency: String? = nil, inStock: Bool? = nil, stockQty: Int? = nil,
-         live: Bool? = nil, syncedAt: String? = nil, variants: [Variant]? = nil) {
+         live: Bool? = nil, syncedAt: String? = nil, variants: [Variant]? = nil, flags: [String]? = nil,
+         productUrl: String? = nil) {
         self.price = price
         self.priceNet = priceNet
         self.currency = currency
@@ -154,6 +171,8 @@ struct ProductDetails: Decodable, Sendable {
         self.live = live
         self.syncedAt = syncedAt
         self.variants = variants
+        self.flags = flags
+        self.productUrl = productUrl
     }
 
     init(from decoder: Decoder) throws {
@@ -173,12 +192,31 @@ struct ProductDetails: Decodable, Sendable {
         syncedAt = try c.decodeIfPresent(String.self, forKey: .syncedAt)
         variants = try? c.decodeIfPresent([Variant].self, forKey: .variants)
         requiresVariant = try c.decodeIfPresent(Bool.self, forKey: .requiresVariant)
+        flags = try? c.decodeIfPresent([String].self, forKey: .flags)
+        productUrl = try? c.decodeIfPresent(String.self, forKey: .productUrl)
     }
 }
 
 struct CheckoutLink: Decodable, Sendable {
     var checkoutUrl: String
     var note: String?
+    /// Sent as false when the shop needs the buyer to add the item on its own page.
+    var cartPrepared: Bool?
+
+    /// create_checkout_link can answer with the product page instead of a prepared cart
+    /// (`cartPrepared: false`, or the product's own URL); the buyer still has to add the item there.
+    func opensProductPage(productUrl: String?) -> Bool {
+        cartPrepared == false || Self.samePage(checkoutUrl, productUrl)
+    }
+
+    /// Same origin, path and query; a query such as `?add-to-cart=7` on the product page is a cart link.
+    static func samePage(_ a: String, _ b: String?) -> Bool {
+        guard let b, let left = URLComponents(string: a), let right = URLComponents(string: b),
+              let host = left.host?.lowercased(), host == right.host?.lowercased() else { return false }
+        func path(_ value: URLComponents) -> String { value.path.hasSuffix("/") ? String(value.path.dropLast()) : value.path }
+        return left.scheme?.lowercased() == right.scheme?.lowercased() && left.port == right.port
+            && path(left) == path(right) && (left.query ?? "") == (right.query ?? "")
+    }
 }
 
 struct ShopInfo: Codable, Equatable, Sendable {
