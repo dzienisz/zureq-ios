@@ -10,7 +10,7 @@ struct SearchView: View {
         NavigationStack {
             content
                 .navigationTitle("ZUREQ")
-                .searchable(text: $model.query, prompt: "What are you looking for?")
+                .searchable(text: $model.query, placement: .navigationBarDrawer(displayMode: .always), prompt: "What are you looking for?")
                 .keepingToolbarDuringSearch()
                 .onSubmit(of: .search) { Task { await model.search(using: app) } }
                 .onChange(of: model.query) { _, newValue in
