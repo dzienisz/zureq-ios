@@ -13,6 +13,8 @@
 #   ASC_PRIVATE_KEY  contents of the AuthKey_<KEY_ID>.p8 file
 # Optional:
 #   BUILD_NUMBER     CURRENT_PROJECT_VERSION (default: UTC timestamp, always increasing)
+#   DEVELOPER_DIR    Xcode to build with (default: the newest /Applications/Xcode*.app,
+#                    because App Store Connect flags builds made with an older SDK)
 #   KEYCHAIN / KEYCHAIN_PASSWORD_FILE  keychain holding the distribution certificate
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -20,6 +22,15 @@ cd "$(dirname "$0")/.."
 for v in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_PRIVATE_KEY; do
   [[ -n "${!v:-}" ]] || { echo "missing $v" >&2; exit 1; }
 done
+
+if [[ -z "${DEVELOPER_DIR:-}" ]]; then
+  newest="$(for app in /Applications/Xcode*.app; do
+    v="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist" 2>/dev/null)" &&
+      printf '%s\t%s\n' "$v" "$app"
+  done | sort -t "$(printf '\t')" -k1,1V | tail -1 | cut -f2)"
+  if [[ -n "$newest" ]]; then export DEVELOPER_DIR="$newest/Contents/Developer"; fi
+fi
+echo "Building with $(xcodebuild -version | tr '\n' ' ')"
 
 BUILD_NUMBER="${BUILD_NUMBER:-$(date -u +%Y%m%d%H%M)}"
 WORK="$(mktemp -d)"
