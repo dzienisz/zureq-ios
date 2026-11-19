@@ -26,7 +26,7 @@ done
 if [[ -z "${DEVELOPER_DIR:-}" ]]; then
   newest="$(for app in /Applications/Xcode*.app; do
     v="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist" 2>/dev/null)" &&
-      printf '%s\t%s\n' "$v" "$app"
+      printf '%s\t%s\n' "$v" "$app" || true
   done | sort -t "$(printf '\t')" -k1,1V | tail -1 | cut -f2)"
   if [[ -n "$newest" ]]; then export DEVELOPER_DIR="$newest/Contents/Developer"; fi
 fi
