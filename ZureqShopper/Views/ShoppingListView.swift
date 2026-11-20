@@ -63,15 +63,14 @@ struct ShoppingListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) { MarketMenu(selection: $list.market).disabled(list.isSearching) }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if !list.text.isEmpty {
+                    // "Done" lives here, not above the keyboard: with a hardware keyboard that bar covers the tab bar.
+                    if editing {
+                        Button("Done") { editing = false }
+                    } else if !list.text.isEmpty {
                         Button("Clear", role: .destructive) { list.clear() }.disabled(list.isSearching)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) { CreditsBadge() }
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") { editing = false }
-                }
             }
             .task { await app.loadMarkets() }
         }
