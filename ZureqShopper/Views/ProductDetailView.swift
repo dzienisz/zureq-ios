@@ -108,6 +108,19 @@ struct ProductDetailView: View {
             }
         }
         .task { await loadDetails() }
+        .onChange(of: watchlist.refreshed[product.id]?.at) {
+            if let live = watchlist.refreshed[product.id]?.details { apply(live) }
+        }
+    }
+
+    private func apply(_ live: ProductDetails) {
+        let applied = Self.applyLiveDetails(product, live)
+        product = applied.product
+        previousPrice = applied.previousPrice ?? previousPrice
+        details = live
+        loadError = nil
+        let skus = live.variants?.map(\.sku) ?? []
+        if skus.count == 1 { variantSku = skus[0] } else if let variantSku, !skus.contains(variantSku) { self.variantSku = nil }
     }
 
     private var needsVariant: Bool {
@@ -121,12 +134,8 @@ struct ProductDetailView: View {
         defer { isLoading = false }
         do {
             let live: ProductDetails = try await app.call("get_product", ["shopId": .string(product.shopId), "sku": .string(product.sku)])
-            let applied = Self.applyLiveDetails(product, live)
-            product = applied.product
-            previousPrice = applied.previousPrice
-            details = live
-            watchlist.record(applied.product)
-            if let variants = live.variants, variants.count == 1 { variantSku = variants[0].sku }
+            apply(live)
+            watchlist.record(product)
         } catch {
             loadError = (error as? ZureqError)?.message ?? String(localized: "Could not check the live price.")
         }
