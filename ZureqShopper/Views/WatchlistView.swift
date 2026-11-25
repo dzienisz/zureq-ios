@@ -5,7 +5,7 @@ struct WatchlistView: View {
     @Environment(Watchlist.self) private var watchlist
 
     var body: some View {
-        NavigationStack {
+        ProductSplitView {
             content
                 .navigationTitle("Watchlist")
                 .toolbar {
@@ -21,7 +21,6 @@ struct WatchlistView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) { CreditsBadge() }
                 }
-                .navigationDestination(for: Product.self) { ProductDetailView(product: $0) }
         }
     }
 

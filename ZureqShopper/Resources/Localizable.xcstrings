@@ -615,6 +615,16 @@
         }
       }
     },
+    "Its live price and checkout show here.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu zobaczysz jego aktualną cenę i przejście do zakupu."
+          }
+        }
+      }
+    },
     "LEGO set": {
       "localizations": {
         "pl": {
@@ -1139,6 +1149,16 @@
         }
       }
     },
+    "Select a product": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wybierz produkt"
+          }
+        }
+      }
+    },
     "Settings": {
       "localizations": {
         "pl": {
@@ -1319,22 +1339,22 @@
         }
       }
     },
-    "The shop sends you to the product page, not a cart. Add the item to the cart there.": {
-      "localizations": {
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sklep kieruje na stronę produktu, a nie do koszyka. Dodaj tam produkt do koszyka."
-          }
-        }
-      }
-    },
     "The shop returned an invalid checkout link.": {
       "localizations": {
         "pl": {
           "stringUnit": {
             "state": "translated",
             "value": "Sklep zwrócił nieprawidłowy link do kasy."
+          }
+        }
+      }
+    },
+    "The shop sends you to the product page, not a cart. Add the item to the cart there.": {
+      "localizations": {
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sklep kieruje na stronę produktu, a nie do koszyka. Dodaj tam produkt do koszyka."
           }
         }
       }

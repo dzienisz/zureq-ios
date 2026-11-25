@@ -5,9 +5,10 @@ struct SearchView: View {
     @Environment(Watchlist.self) private var watchlist
     @State private var model = SearchModel()
     @State private var showFilters = false
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
-        NavigationStack {
+        ProductSplitView {
             content
                 .navigationTitle(crowdsTitle ? "" : "ZUREQ")
                 .searchable(text: $model.query, placement: .navigationBarDrawer(displayMode: .always), prompt: "What are you looking for?")
@@ -38,14 +39,14 @@ struct SearchView: View {
                     ToolbarItem(placement: .topBarTrailing) { CreditsBadge() }
                 }
                 .sheet(isPresented: $showFilters) { FiltersSheet(model: model) }
-                .navigationDestination(for: Product.self) { ProductDetailView(product: $0) }
                 .task { await app.loadMarkets() }
         }
     }
 
-    /// iOS 27 keeps the title inline beside the toolbar buttons; with Sort added it is cut to "ZU…".
+    /// iOS 27 keeps the title inline beside the toolbar buttons; with Sort added, or in the narrow list column
+    /// of a wide screen, it is cut to "ZU…".
     private var crowdsTitle: Bool {
-        if #available(iOS 27, *) { model.phase == .results } else { false }
+        if #available(iOS 27, *) { model.phase == .results || sizeClass == .regular } else { false }
     }
 
     private static let suggestions: [String] = [
@@ -108,6 +109,7 @@ struct SearchView: View {
                     }
                 }
             }
+            .listStyle(.insetGrouped)
         case .loading:
             ProgressView("Searching shops…")
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
