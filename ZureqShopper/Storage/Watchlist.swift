@@ -24,6 +24,8 @@ final class Watchlist {
     private(set) var items: [WatchedItem]
     private(set) var isRefreshing = false
     private(set) var refreshError: String?
+    /// Live details from the latest refresh, by product id, so an open product screen can show them too.
+    private(set) var refreshed: [String: (details: ProductDetails, at: Date)] = [:]
 
     @ObservationIgnored private let defaults: UserDefaults
 
@@ -76,7 +78,9 @@ final class Watchlist {
         for item in items {
             do {
                 let details = try await fetch(item.product)
-                record(ProductDetailView.applyLiveDetails(item.product, details).product, checkedAt: now())
+                let checkedAt = now()
+                record(ProductDetailView.applyLiveDetails(item.product, details).product, checkedAt: checkedAt)
+                refreshed[item.id] = (details, checkedAt)
             } catch let error as ZureqError where error.stopsBatch {
                 refreshError = error.message
                 return

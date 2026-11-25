@@ -59,6 +59,9 @@ final class WatchlistTests: XCTestCase {
         XCTAssertEqual(item.product.inStock, false)
         XCTAssertEqual(item.priceChange, 20)
         XCTAssertEqual(item.checkedAt, checked)
+        XCTAssertEqual(list.refreshed[headphones.id]?.details.price, 120)
+        XCTAssertEqual(list.refreshed[headphones.id]?.at, checked)
+        XCTAssertNil(list.refreshed[speaker.id])
         XCTAssertEqual(list.refreshError, "Could not check 1 of 2 prices. Try again later.")
         XCTAssertFalse(list.isRefreshing)
     }
