@@ -83,7 +83,8 @@ final class SearchModel {
             products = app.shown(Self.tagged(result.products, with: args))
             receivedCount = result.products.count
             note = result.note
-            phase = products.isEmpty ? .empty : .results
+            // A full page whose rows were all left out still offers "Show up to 50 results".
+            phase = products.isEmpty && receivedCount < limit ? .empty : .results
         } catch {
             guard request == generation else { return }
             phase = .failed((error as? ZureqError)?.message ?? String(localized: "Something went wrong. Please try again."))
