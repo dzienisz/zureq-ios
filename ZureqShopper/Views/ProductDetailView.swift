@@ -137,6 +137,7 @@ struct ProductDetailView: View {
             apply(live)
             watchlist.record(product)
         } catch {
+            if (error as? ZureqError)?.isMissingProduct == true { app.markMissing(product) }
             loadError = (error as? ZureqError)?.message ?? String(localized: "Could not check the live price.")
         }
     }

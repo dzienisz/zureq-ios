@@ -95,7 +95,7 @@ struct ShoppingListView: View {
             var args: [String: JSONValue] = ["query": .string(query), "inStockOnly": true, "limit": .number(Double(ShoppingList.candidatesPerItem))]
             args.merge(location) { _, new in new }
             let result: SearchResult = try await app.call("search_products", args) { $0.products.count }
-            return result.products
+            return app.shown(result.products)
         }
     }
 

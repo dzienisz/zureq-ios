@@ -22,6 +22,8 @@ final class SearchModel {
     var sort: Sort = .relevance
     private(set) var phase: Phase = .idle
     private(set) var products: [Product] = []
+    /// Rows the last answer had before rows without a picture and missing products were left out.
+    private(set) var receivedCount = 0
     private(set) var note: String?
     private(set) var searchedQuery = ""
     /// search_products returns at most 50 rows; the first page asks for 20 and "Show more" re-runs the query for 50.
@@ -43,7 +45,7 @@ final class SearchModel {
 
     var hasFilters: Bool { !maxPrice.isEmpty || !inStockOnly || inPostPayOnly }
     /// More rows may exist when the page came back full and we have not asked for the maximum yet.
-    var canLoadMore: Bool { phase == .results && !isLoadingMore && products.count >= limit && limit < Self.maxLimit }
+    var canLoadMore: Bool { phase == .results && !isLoadingMore && receivedCount >= limit && limit < Self.maxLimit }
 
     func arguments(for query: String) throws -> [String: JSONValue] {
         var args: [String: JSONValue] = ["query": .string(query), "limit": .number(Double(limit)), "inStockOnly": .bool(inStockOnly)]
@@ -67,6 +69,7 @@ final class SearchModel {
         query = text
         searchedQuery = text
         products = []
+        receivedCount = 0
         note = nil
         loadMoreError = nil
         isLoadingMore = false
@@ -77,9 +80,10 @@ final class SearchModel {
             let result: SearchResult = try await app.call("search_products", args) { $0.products.count }
             guard request == generation else { return }
             app.addHistory(text)
-            products = Self.tagged(result.products, with: args)
+            products = app.shown(Self.tagged(result.products, with: args))
+            receivedCount = result.products.count
             note = result.note
-            phase = result.products.isEmpty ? .empty : .results
+            phase = products.isEmpty ? .empty : .results
         } catch {
             guard request == generation else { return }
             phase = .failed((error as? ZureqError)?.message ?? String(localized: "Something went wrong. Please try again."))
@@ -97,7 +101,11 @@ final class SearchModel {
             let args = try arguments(for: searchedQuery)
             let result: SearchResult = try await app.call("search_products", args) { $0.products.count }
             guard request == generation else { return }
-            if !result.products.isEmpty { products = Self.tagged(result.products, with: args) }
+            let more = app.shown(Self.tagged(result.products, with: args))
+            if !more.isEmpty {
+                products = more
+                receivedCount = result.products.count
+            }
             note = result.note
         } catch {
             guard request == generation else { return }
@@ -110,6 +118,7 @@ final class SearchModel {
     func reset() {
         generation += 1
         products = []
+        receivedCount = 0
         note = nil
         loadMoreError = nil
         isLoadingMore = false

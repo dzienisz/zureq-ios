@@ -131,7 +131,7 @@ struct SearchView: View {
         case .results:
             List {
                 Section {
-                    ForEach(model.sortedProducts) { product in
+                    ForEach(app.shown(model.sortedProducts)) { product in
                         NavigationLink(value: product) { ProductRow(product: product) }
                             .swipeActions(edge: .leading) {
                                 let watched = watchlist.contains(product)

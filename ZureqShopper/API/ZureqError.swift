@@ -32,6 +32,9 @@ struct ZureqError: Error, Equatable, LocalizedError, Sendable {
     /// Errors that will fail every following call too, so batch work should stop.
     var stopsBatch: Bool { [.noKey, .badKey, .creditsExhausted].contains(code) }
 
+    /// get_product answers "<shop> has no product with sku <sku>" for search rows the shop no longer has.
+    var isMissingProduct: Bool { code == .apiError && message.lowercased().contains("no product with sku") }
+
     /// Per docs.zureq.io: retry once on rate limits, 503/-32603, shop timeouts and "temporarily unavailable".
     var isRetryable: Bool {
         switch code {

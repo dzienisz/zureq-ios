@@ -7,6 +7,8 @@ final class AppModel {
     private static let apiKeyAccount = "zureqApiKey"
     private static let historyKey = "zureqHistory"
     private static let marketsCacheKey = "zureqMarketsCache"
+    private static let missingProductsKey = "zureqMissingProducts"
+    private static let missingProductsLimit = 500
     private static let marketsCacheTTL: TimeInterval = 24 * 60 * 60
 
     private(set) var hasKey: Bool
@@ -15,6 +17,8 @@ final class AppModel {
     private(set) var sessionCredits: Double = 0
     private(set) var markets: [Market] = []
     private(set) var history: [String]
+    /// Ids of products get_product could not find, oldest first; search results leave them out.
+    private(set) var missingProducts: [String]
 
     @ObservationIgnored let client: ZureqClient
     @ObservationIgnored let auth: ZureqAuth
@@ -33,6 +37,7 @@ final class AppModel {
         usesZureqSignIn = signedIn
         hasKey = storedKey || signedIn
         history = defaults.stringArray(forKey: Self.historyKey) ?? []
+        missingProducts = defaults.stringArray(forKey: Self.missingProductsKey) ?? []
         #if DEBUG
         // Simulator testing: `SIMCTL_CHILD_ZUREQ_API_KEY=zmcp_… xcrun simctl launch …` seeds the Keychain.
         if let seeded = ProcessInfo.processInfo.environment["ZUREQ_API_KEY"], !seeded.isEmpty {
@@ -105,6 +110,18 @@ final class AppModel {
         if let data = try? JSONEncoder().encode(markets) {
             defaults.set(["savedAt": Date().timeIntervalSince1970, "data": data], forKey: Self.marketsCacheKey)
         }
+    }
+
+    func markMissing(_ product: Product) {
+        guard !missingProducts.contains(product.id) else { return }
+        missingProducts = Array((missingProducts + [product.id]).suffix(Self.missingProductsLimit))
+        defaults.set(missingProducts, forKey: Self.missingProductsKey)
+    }
+
+    /// Search rows worth showing: they have a picture and get_product has not reported them missing.
+    func shown(_ products: [Product]) -> [Product] {
+        let missing = Set(missingProducts)
+        return products.filter { $0.imageURL != nil && !missing.contains($0.id) }
     }
 
     func addHistory(_ query: String) {
