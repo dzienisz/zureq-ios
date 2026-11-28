@@ -79,6 +79,21 @@ final class SearchModelTests: XCTestCase {
         XCTAssertEqual(model.products.map(\.name), ["Tea"])
     }
 
+    func testProductsReportedMissingComeBackAfterAWeek() async {
+        let stub = StubTransport([(200, Self.results(["Tea", "Gone tea"]))])
+        let app = AppModel(keychain: keychain, defaults: defaults, transport: stub)
+        let model = SearchModel(defaults: defaults)
+        await model.search(using: app, query: "tea")
+        let marked = Date()
+        app.markMissing(model.products[1], now: marked)
+
+        XCTAssertEqual(app.shown(model.products, now: marked.addingTimeInterval(6 * 86_400)).map(\.name), ["Tea"])
+        XCTAssertEqual(app.shown(model.products, now: marked.addingTimeInterval(7 * 86_400)).map(\.name), ["Tea", "Gone tea"])
+
+        app.markMissing(model.products[0], now: marked.addingTimeInterval(8 * 86_400))
+        XCTAssertEqual(Array(app.missingProducts.keys), [model.products[0].id])
+    }
+
     func testOnlyNoProductWithSkuCountsAsMissing() {
         XCTAssertTrue(ZureqError(code: .apiError, message: "Shop \"a-pl\" has no product with sku \"7\".").isMissingProduct)
         XCTAssertFalse(ZureqError(code: .apiError, message: "The shop did not answer in time.").isMissingProduct)
