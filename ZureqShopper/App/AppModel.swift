@@ -118,6 +118,24 @@ final class AppModel {
         defaults.set(missingProducts, forKey: Self.missingProductsKey)
     }
 
+    func unmarkMissing(_ product: Product) {
+        guard missingProducts.contains(product.id) else { return }
+        missingProducts.removeAll { $0 == product.id }
+        defaults.set(missingProducts, forKey: Self.missingProductsKey)
+    }
+
+    /// Runs a get_product lookup and keeps the missing-products list in step with its answer.
+    func details(for product: Product) async throws -> ProductDetails {
+        do {
+            let live: ProductDetails = try await call("get_product", ["shopId": .string(product.shopId), "sku": .string(product.sku)])
+            unmarkMissing(product)
+            return live
+        } catch let error as ZureqError where error.isMissingProduct {
+            markMissing(product)
+            throw error
+        }
+    }
+
     /// Search rows worth showing: they have a picture and get_product has not reported them missing.
     func shown(_ products: [Product]) -> [Product] {
         let missing = Set(missingProducts)

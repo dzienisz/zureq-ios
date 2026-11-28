@@ -117,7 +117,7 @@ struct ShoppingListView: View {
     }
 
     private func fetchDetails(_ product: Product) async throws -> ProductDetails {
-        try await app.call("get_product", ["shopId": .string(product.shopId), "sku": .string(product.sku)])
+        try await app.details(for: product)
     }
 }
 
