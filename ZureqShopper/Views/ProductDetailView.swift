@@ -133,8 +133,7 @@ struct ProductDetailView: View {
         loadError = nil
         defer { isLoading = false }
         do {
-            let live: ProductDetails = try await app.call("get_product", ["shopId": .string(product.shopId), "sku": .string(product.sku)])
-            apply(live)
+            apply(try await app.details(for: product))
             watchlist.record(product)
         } catch {
             loadError = (error as? ZureqError)?.message ?? String(localized: "Could not check the live price.")

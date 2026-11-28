@@ -43,7 +43,7 @@ final class SearchModelTests: XCTestCase {
     }
 
     private static func results(_ names: [String]) -> String {
-        let rows = names.enumerated().map { #"{"shopId":"a-pl","sku":"\#($0)","name":"\#($1)","price":10,"currency":"PLN"}"# }
+        let rows = names.enumerated().map { #"{"shopId":"a-pl","sku":"\#($0)","name":"\#($1)","price":10,"currency":"PLN","imageUrl":"https://a.pl/\#($0).jpg"}"# }
         return #"{"result":{"structuredContent":{"products":[\#(rows.joined(separator: ","))]}},"jsonrpc":"2.0","id":1}"#
     }
 
@@ -51,6 +51,53 @@ final class SearchModelTests: XCTestCase {
 
     private func product(_ sku: String, _ price: Double?, _ currency: String? = "PLN") -> Product {
         Product(shopId: "a-pl", sku: sku, name: sku, price: price, currency: currency)
+    }
+
+    func testRowsWithoutAPictureAreLeftOut() async {
+        let body = #"{"result":{"structuredContent":{"products":[{"shopId":"a-pl","sku":"1","name":"Tea","price":10,"imageUrl":"https://a.pl/1.jpg"},{"shopId":"a-pl","sku":"2","name":"Bare tea","price":9},{"shopId":"a-pl","sku":"3","name":"Blank tea","price":8,"imageUrl":""}]}},"jsonrpc":"2.0","id":1}"#
+        let app = AppModel(keychain: keychain, defaults: defaults, transport: StubTransport([(200, body)]))
+        let model = SearchModel(defaults: defaults)
+
+        await model.search(using: app, query: "tea")
+
+        XCTAssertEqual(model.products.map(\.sku), ["1"])
+        XCTAssertEqual(model.phase, .results)
+    }
+
+    func testProductsReportedMissingStayOutOfLaterSearches() async {
+        let stub = StubTransport([(200, Self.results(["Tea", "Gone tea"])), (200, Self.results(["Tea", "Gone tea"]))])
+        let app = AppModel(keychain: keychain, defaults: defaults, transport: stub)
+        let model = SearchModel(defaults: defaults)
+
+        await model.search(using: app, query: "tea")
+        XCTAssertEqual(model.products.count, 2)
+        app.markMissing(model.products[1])
+        XCTAssertEqual(app.shown(model.products).map(\.name), ["Tea"])
+
+        let relaunched = AppModel(keychain: keychain, defaults: defaults, transport: stub)
+        await model.search(using: relaunched, query: "tea")
+        XCTAssertEqual(model.products.map(\.name), ["Tea"])
+    }
+
+    func testProductsReportedMissingComeBackAfterAWeek() async {
+        let stub = StubTransport([(200, Self.results(["Tea", "Gone tea"]))])
+        let app = AppModel(keychain: keychain, defaults: defaults, transport: stub)
+        let model = SearchModel(defaults: defaults)
+        await model.search(using: app, query: "tea")
+        let marked = Date()
+        app.markMissing(model.products[1], now: marked)
+
+        XCTAssertEqual(app.shown(model.products, now: marked.addingTimeInterval(6 * 86_400)).map(\.name), ["Tea"])
+        XCTAssertEqual(app.shown(model.products, now: marked.addingTimeInterval(7 * 86_400)).map(\.name), ["Tea", "Gone tea"])
+
+        app.markMissing(model.products[0], now: marked.addingTimeInterval(8 * 86_400))
+        XCTAssertEqual(Array(app.missingProducts.keys), [model.products[0].id])
+    }
+
+    func testOnlyNoProductWithSkuCountsAsMissing() {
+        XCTAssertTrue(ZureqError(code: .apiError, message: "Shop \"a-pl\" has no product with sku \"7\".").isMissingProduct)
+        XCTAssertFalse(ZureqError(code: .apiError, message: "The shop did not answer in time.").isMissingProduct)
+        XCTAssertFalse(ZureqError(code: .networkError, message: "has no product with sku").isMissingProduct)
     }
 
     func testFailedLoadMoreKeepsTheRowsOnScreen() async {

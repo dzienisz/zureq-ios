@@ -7,6 +7,10 @@ final class AppModel {
     private static let apiKeyAccount = "zureqApiKey"
     private static let historyKey = "zureqHistory"
     private static let marketsCacheKey = "zureqMarketsCache"
+    private static let missingProductsKey = "zureqMissingProducts"
+    private static let missingProductsLimit = 500
+    /// A shop or the index can bring a product back, so a miss is only trusted for a week.
+    static let missingProductsLifetime: TimeInterval = 7 * 24 * 60 * 60
     private static let marketsCacheTTL: TimeInterval = 24 * 60 * 60
 
     private(set) var hasKey: Bool
@@ -15,6 +19,8 @@ final class AppModel {
     private(set) var sessionCredits: Double = 0
     private(set) var markets: [Market] = []
     private(set) var history: [String]
+    /// Products get_product could not find, by id, with the time of the miss; search results leave them out for a week.
+    private(set) var missingProducts: [String: TimeInterval]
 
     @ObservationIgnored let client: ZureqClient
     @ObservationIgnored let auth: ZureqAuth
@@ -33,6 +39,7 @@ final class AppModel {
         usesZureqSignIn = signedIn
         hasKey = storedKey || signedIn
         history = defaults.stringArray(forKey: Self.historyKey) ?? []
+        missingProducts = defaults.dictionary(forKey: Self.missingProductsKey) as? [String: TimeInterval] ?? [:]
         #if DEBUG
         // Simulator testing: `SIMCTL_CHILD_ZUREQ_API_KEY=zmcp_… xcrun simctl launch …` seeds the Keychain.
         if let seeded = ProcessInfo.processInfo.environment["ZUREQ_API_KEY"], !seeded.isEmpty {
@@ -104,6 +111,42 @@ final class AppModel {
         markets = response.markets()
         if let data = try? JSONEncoder().encode(markets) {
             defaults.set(["savedAt": Date().timeIntervalSince1970, "data": data], forKey: Self.marketsCacheKey)
+        }
+    }
+
+    func markMissing(_ product: Product, now: Date = Date()) {
+        let time = now.timeIntervalSince1970
+        var missing = missingProducts.filter { time - $0.value < Self.missingProductsLifetime }
+        missing[product.id] = time
+        let newest = missing.sorted { $0.value > $1.value }.prefix(Self.missingProductsLimit)
+        missingProducts = Dictionary(uniqueKeysWithValues: newest.map { ($0.key, $0.value) })
+        defaults.set(missingProducts, forKey: Self.missingProductsKey)
+    }
+
+    func unmarkMissing(_ product: Product) {
+        guard missingProducts.removeValue(forKey: product.id) != nil else { return }
+        defaults.set(missingProducts, forKey: Self.missingProductsKey)
+    }
+
+    /// Runs a get_product lookup and keeps the missing-products list in step with its answer.
+    func details(for product: Product) async throws -> ProductDetails {
+        do {
+            let live: ProductDetails = try await call("get_product", ["shopId": .string(product.shopId), "sku": .string(product.sku)])
+            unmarkMissing(product)
+            return live
+        } catch let error as ZureqError where error.isMissingProduct {
+            markMissing(product)
+            throw error
+        }
+    }
+
+    /// Search rows worth showing: they have a picture and get_product has not reported them missing.
+    func shown(_ products: [Product], now: Date = Date()) -> [Product] {
+        let time = now.timeIntervalSince1970
+        return products.filter { product in
+            guard product.imageURL != nil else { return false }
+            guard let missedAt = missingProducts[product.id] else { return true }
+            return time - missedAt >= Self.missingProductsLifetime
         }
     }
 
